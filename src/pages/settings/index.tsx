@@ -26,6 +26,15 @@ export default function SettingsPage(): ReactElement {
   const { refresh } = useContext(BeeContext)
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
+  async function test() {
+    // eslint-disable-next-line no-console
+    console.log('desktopUrl', desktopUrl)
+    const resultConfig = await getDesktopConfiguration(desktopUrl)
+    // eslint-disable-next-line no-console
+    console.log('config', resultConfig)
+  }
+  //test()
+
   async function handleSetRpcUrl(value: string) {
     try {
       setAndPersistJsonRpcProvider(value)

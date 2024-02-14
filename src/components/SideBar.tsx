@@ -71,7 +71,7 @@ export default function SideBar(): ReactElement {
 
   const navBarItems = [
     {
-      label: 'Info',
+      label: 'Hello World',
       path: ROUTES.INFO,
       icon: HomeIcon,
     },
