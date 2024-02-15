@@ -7,6 +7,7 @@ import { Context as BeeContext } from '../../providers/Bee'
 import { Context as SettingsContext } from '../../providers/Settings'
 import { getDesktopConfiguration, restartBeeNode, setJsonRpcInDesktop } from '../../utils/desktop'
 import WithdrawDepositModal from '../../components/WithdrawDepositModal'
+import TestModal from '../../components/TestModal'
 
 export default function SettingsPage(): ReactElement {
   const {
@@ -79,11 +80,12 @@ export default function SettingsPage(): ReactElement {
     <>
       <WithdrawDepositModal
         successMessage="jajdejo"
-        errorMessage=":("
-        dialogMessage="dialogMesg"
-        label="label"
+        errorMessage="never seen this :("
+        dialogMessage="Akár egy hosszabb dialog Mesg. Tényleg lehet hosszabb."
+        label="Title"
         action={handleAction}
       />
+      <TestModal someParam="paremOne" otherParam={5} />
       <ExpandableList label="API Settings" defaultOpen>
         <ExpandableListItemInput
           label="Bee API"
