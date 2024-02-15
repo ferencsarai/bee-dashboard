@@ -8,6 +8,7 @@ import { Context as SettingsContext } from '../../providers/Settings'
 import { getDesktopConfiguration, restartBeeNode, setJsonRpcInDesktop } from '../../utils/desktop'
 import WithdrawDepositModal from '../../components/WithdrawDepositModal'
 import TestModal from '../../components/TestModal'
+import TestModalTwo from '../../components/TestModalTwo'
 
 export default function SettingsPage(): ReactElement {
   const {
@@ -86,6 +87,7 @@ export default function SettingsPage(): ReactElement {
         action={handleAction}
       />
       <TestModal someParam="paremOne" otherParam={5} />
+      <TestModalTwo someParam="paramTwo" otherParam={33} />
       <ExpandableList label="API Settings" defaultOpen>
         <ExpandableListItemInput
           label="Bee API"

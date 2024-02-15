@@ -10,6 +10,9 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
+import TopUp from '../pages/top-up'
+import { StepContent } from '@material-ui/core'
+import { CryptoTopUpIndex } from '../pages/top-up/CryptoTopUpIndex'
 
 interface Props {
   someParam: string
@@ -17,7 +20,7 @@ interface Props {
   icon?: ReactNode
 }
 
-export default function TestModal({ someParam, otherParam, icon }: Props) {
+export default function TestModalTwo({ someParam, otherParam, icon }: Props) {
   const [open, setOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [value, setValue] = useState(0)
@@ -35,29 +38,32 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
     return otherParam * 2
   }
 
-  const steps = ['Step One', 'A második lépés', 'Hármas lépés']
+  const loadedComponent = switchComponent()
+
+  function switchComponent() {
+    switch (currentStep) {
+      case 0:
+        return <CryptoTopUpIndex />
+      case 1:
+        return <p>2</p>
+      case 2:
+        return <p>3</p>
+      default:
+        return <p>{'Error'}</p>
+    }
+  }
+
+  const steps = ['Send xDAI', 'A második lépés', 'Hármas lépés']
 
   return (
     <div>
       <Button variant="contained" onClick={handleClickOpen} startIcon={icon}>
         {'label'}
       </Button>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="from-dialog-title" fullWidth maxWidth={'xl'}>
+      <Dialog open={open} onClose={handleClose} aria-labelledby="from-dialog-title" fullScreen>
         <DialogTitle id="form-dialog-title">{'Ez a cím'}</DialogTitle>
         <DialogContent>
           <DialogContentText>{'Ez itt a DialogContentText'}</DialogContentText>
-          <Input
-            autoFocus
-            margin="dense"
-            id="name"
-            type="text"
-            placeholder="Tegyük fel van input"
-            fullWidth
-            value={value}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) =>
-              setValue(Number(e.target.value))
-            }
-          />
           <Stepper activeStep={currentStep} alternativeLabel>
             {steps.map((label, index) => (
               <Step key={label} onClick={() => setCurrentStep(index)}>
@@ -65,6 +71,7 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
               </Step>
             ))}
           </Stepper>
+          {loadedComponent}
           {value < 0 && <FormHelperText>Ez egy negatív szám. </FormHelperText>}
         </DialogContent>
         <DialogActions>
