@@ -16,6 +16,9 @@ import { CryptoTopUpIndex } from '../pages/top-up/CryptoTopUpIndex'
 import ExpandableListItemKey from './ExpandableListItemKey'
 import { Context } from '../providers/Bee'
 import { Context as BalanceProvider } from '../providers/WalletBalance'
+import { Swap } from '../pages/top-up/Swap'
+import BuyxDai from './justTesting/BuyxDai'
+import { SwapXdaitoBzz } from './justTesting/SwapDaiToBzz'
 
 interface Props {
   someParam: string
@@ -50,13 +53,9 @@ export default function TestModalTwo({ someParam, otherParam, icon }: Props) {
       case 0:
         if (!nodeAddresses?.ethereum) return <p>{'Error'}</p>
 
-        return (
-          <Box mb={0.25}>
-            <ExpandableListItemKey label="Send xDAI to this address" value={nodeAddresses.ethereum} expanded />
-          </Box>
-        )
+        return <BuyxDai />
       case 1:
-        return <CryptoTopUpIndex />
+        return <SwapXdaitoBzz />
       case 2:
         return <p>3</p>
       default:
@@ -64,7 +63,7 @@ export default function TestModalTwo({ someParam, otherParam, icon }: Props) {
     }
   }
 
-  const steps = ['Send xDAI', 'A második lépés', 'Hármas lépés']
+  const steps = ['Send xDAI', 'Swap', 'Hármas lépés']
 
   return (
     <div>
