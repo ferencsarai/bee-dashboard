@@ -1,11 +1,12 @@
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { useSnackbar } from 'notistack'
-import { ReactElement, useContext } from 'react'
+import { ReactElement, useContext, useEffect } from 'react'
 import ExpandableList from '../../components/ExpandableList'
 import ExpandableListItemInput from '../../components/ExpandableListItemInput'
 import { Context as BeeContext } from '../../providers/Bee'
 import { Context as SettingsContext } from '../../providers/Settings'
 import { getDesktopConfiguration, restartBeeNode, setJsonRpcInDesktop } from '../../utils/desktop'
+import WithdrawDepositModal from '../../components/WithdrawDepositModal'
 
 export default function SettingsPage(): ReactElement {
   const {
@@ -27,13 +28,13 @@ export default function SettingsPage(): ReactElement {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
 
   async function test() {
-    // eslint-disable-next-line no-console
-    console.log('desktopUrl', desktopUrl)
     const resultConfig = await getDesktopConfiguration(desktopUrl)
     // eslint-disable-next-line no-console
     console.log('config', resultConfig)
   }
-  //test()
+  useEffect(() => {
+    test()
+  }, [])
 
   async function handleSetRpcUrl(value: string) {
     try {
@@ -68,8 +69,21 @@ export default function SettingsPage(): ReactElement {
     )
   }
 
+  const handleAction = async (amount: bigint): Promise<string> => {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    return 'result'
+  }
+
   return (
     <>
+      <WithdrawDepositModal
+        successMessage="jajdejo"
+        errorMessage=":("
+        dialogMessage="dialogMesg"
+        label="label"
+        action={handleAction}
+      />
       <ExpandableList label="API Settings" defaultOpen>
         <ExpandableListItemInput
           label="Bee API"
