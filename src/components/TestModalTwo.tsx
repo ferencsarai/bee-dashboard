@@ -45,8 +45,6 @@ export default function TestModalTwo({ someParam, otherParam, icon }: Props) {
   function switchComponent() {
     switch (currentStep) {
       case 0:
-        if (!nodeAddresses?.ethereum) return <p>{'Error'}</p>
-
         return <BuyxDai />
       case 1:
         return <SwapXdaitoBzz />
@@ -75,7 +73,6 @@ export default function TestModalTwo({ someParam, otherParam, icon }: Props) {
             ))}
           </Stepper>
           {loadedComponent}
-          {value < 0 && <FormHelperText>Ez egy negatív szám. </FormHelperText>}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
