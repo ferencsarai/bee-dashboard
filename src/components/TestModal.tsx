@@ -7,6 +7,9 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import FormHelperText from '@material-ui/core/FormHelperText'
+import Stepper from '@material-ui/core/Stepper'
+import Step from '@material-ui/core/Step'
+import StepLabel from '@material-ui/core/StepLabel'
 
 interface Props {
   someParam: string
@@ -16,6 +19,7 @@ interface Props {
 
 export default function TestModal({ someParam, otherParam, icon }: Props) {
   const [open, setOpen] = useState(false)
+  const [currentStep, setCurrentStep] = useState(0)
   const [value, setValue] = useState(0)
 
   const handleClickOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -30,6 +34,8 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
   const handleAction = () => {
     return otherParam * 2
   }
+
+  const steps = ['Step One', 'A második lépés', 'Hármas lépés']
 
   return (
     <div>
@@ -52,6 +58,13 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
               setValue(Number(e.target.value))
             }
           />
+          <Stepper activeStep={currentStep} alternativeLabel>
+            {steps.map((label, index) => (
+              <Step key={label} onClick={() => setCurrentStep(index)}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
           {value < 0 && <FormHelperText>Ez egy negatív szám. </FormHelperText>}
         </DialogContent>
         <DialogActions>
