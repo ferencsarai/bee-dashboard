@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useState } from 'react'
+import { ReactElement, ReactNode, useContext, useState } from 'react'
 import Button from '@material-ui/core/Button'
 import Input from '@material-ui/core/Input'
 import Dialog from '@material-ui/core/Dialog'
@@ -11,8 +11,11 @@ import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
 import TopUp from '../pages/top-up'
-import { StepContent } from '@material-ui/core'
+import Box from '@material-ui/core/Box'
 import { CryptoTopUpIndex } from '../pages/top-up/CryptoTopUpIndex'
+import ExpandableListItemKey from './ExpandableListItemKey'
+import { Context } from '../providers/Bee'
+import { Context as BalanceProvider } from '../providers/WalletBalance'
 
 interface Props {
   someParam: string
@@ -24,6 +27,8 @@ export default function TestModalTwo({ someParam, otherParam, icon }: Props) {
   const [open, setOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [value, setValue] = useState(0)
+  const { nodeAddresses } = useContext(Context)
+  const { balance } = useContext(BalanceProvider)
 
   const handleClickOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
     setOpen(true)
@@ -43,9 +48,15 @@ export default function TestModalTwo({ someParam, otherParam, icon }: Props) {
   function switchComponent() {
     switch (currentStep) {
       case 0:
-        return <CryptoTopUpIndex />
+        if (!nodeAddresses?.ethereum) return <p>{'Error'}</p>
+
+        return (
+          <Box mb={0.25}>
+            <ExpandableListItemKey label="Send xDAI to this address" value={nodeAddresses.ethereum} expanded />
+          </Box>
+        )
       case 1:
-        return <p>2</p>
+        return <CryptoTopUpIndex />
       case 2:
         return <p>3</p>
       default:
@@ -61,9 +72,8 @@ export default function TestModalTwo({ someParam, otherParam, icon }: Props) {
         {'label'}
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="from-dialog-title" fullScreen>
-        <DialogTitle id="form-dialog-title">{'Ez a cím'}</DialogTitle>
+        <DialogTitle id="form-dialog-title">{'Setup Swarm Full Node'}</DialogTitle>
         <DialogContent>
-          <DialogContentText>{'Ez itt a DialogContentText'}</DialogContentText>
           <Stepper activeStep={currentStep} alternativeLabel>
             {steps.map((label, index) => (
               <Step key={label} onClick={() => setCurrentStep(index)}>
