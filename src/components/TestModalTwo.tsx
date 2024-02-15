@@ -1,24 +1,18 @@
-import { ReactElement, ReactNode, useContext, useState } from 'react'
+import { ReactNode, useContext, useState } from 'react'
 import Button from '@material-ui/core/Button'
-import Input from '@material-ui/core/Input'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import FormHelperText from '@material-ui/core/FormHelperText'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
-import TopUp from '../pages/top-up'
-import Box from '@material-ui/core/Box'
-import { CryptoTopUpIndex } from '../pages/top-up/CryptoTopUpIndex'
-import ExpandableListItemKey from './ExpandableListItemKey'
 import { Context } from '../providers/Bee'
 import { Context as BalanceProvider } from '../providers/WalletBalance'
-import { Swap } from '../pages/top-up/Swap'
 import BuyxDai from './justTesting/BuyxDai'
 import { SwapXdaitoBzz } from './justTesting/SwapDaiToBzz'
+import PresentSuccess from './justTesting/PresentSuccess'
 
 interface Props {
   someParam: string
@@ -57,7 +51,7 @@ export default function TestModalTwo({ someParam, otherParam, icon }: Props) {
       case 1:
         return <SwapXdaitoBzz />
       case 2:
-        return <p>3</p>
+        return <PresentSuccess />
       default:
         return <p>{'Error'}</p>
     }
