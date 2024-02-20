@@ -33,6 +33,14 @@ export function upgradeToLightNode(desktopUrl: string, rpcProvider: string): Pro
   })
 }
 
+export function upgradeToFullNode(desktopUrl: string, rpcProvider: string): Promise<BeeConfig> {
+  return updateDesktopConfiguration(desktopUrl, {
+    'swap-enable': true,
+    'full-node': true,
+    'blockchain-rpc-endpoint': rpcProvider,
+  })
+}
+
 export async function setJsonRpcInDesktop(desktopUrl: string, value: string): Promise<void> {
   await updateDesktopConfiguration(desktopUrl, {
     'blockchain-rpc-endpoint': value,
