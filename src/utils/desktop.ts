@@ -50,6 +50,10 @@ export async function getStakeAmount(desktopUrl: string): Promise<bigint> {
   return result.stakedAmount
 }
 
+export async function getRedistributionState(desktopUrl: string): Promise<object> {
+  return getJson(`${desktopUrl}/redistributionstate`)
+}
+
 export async function setJsonRpcInDesktop(desktopUrl: string, value: string): Promise<void> {
   await updateDesktopConfiguration(desktopUrl, {
     'blockchain-rpc-endpoint': value,
