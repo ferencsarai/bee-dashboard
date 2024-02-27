@@ -1,20 +1,14 @@
-import { ReactElement, ReactNode, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import Button from '@material-ui/core/Button'
-import Input from '@material-ui/core/Input'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import FormHelperText from '@material-ui/core/FormHelperText'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
 import SwitchMode from './justTesting/SwitchMode'
 import { BuyAndSwap } from './justTesting/BuyAndSwap'
 import PresentSuccess from './justTesting/Stake'
-import Slide from '@material-ui/core/Slide'
-import { Waiting } from './Waiting'
 import { CircularProgress } from '@material-ui/core'
 
 interface Props {
@@ -41,10 +35,6 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
 
   const handleModeSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMode(event.target.value)
-  }
-
-  const handleAction = () => {
-    return otherParam * 2
   }
 
   const loadedComponent = switchComponent()
@@ -80,7 +70,7 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
         <DialogContent>
           <Stepper activeStep={currentStep} alternativeLabel>
             {steps.map((label, index) => (
-              <Step key={label} onClick={() => setCurrentStep(index)}>
+              <Step key={label}>
                 <StepLabel>{label}</StepLabel>
               </Step>
             ))}
