@@ -1,7 +1,7 @@
 import { BeeModes } from '@ethersphere/bee-js'
 import { Box, Typography } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
-import { ReactElement, useContext, useEffect, useState } from 'react'
+import React, { ReactElement, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import ArrowDown from 'remixicon-react/ArrowDownCircleLineIcon'
 import Check from 'remixicon-react/CheckLineIcon'
@@ -9,6 +9,7 @@ import ExpandableListItem from '../ExpandableListItem'
 import ExpandableListItemActions from '../ExpandableListItemActions'
 import ExpandableListItemKey from '../ExpandableListItemKey'
 import { HistoryHeader } from '../HistoryHeader'
+import { TextField, Button } from '@material-ui/core'
 import { Loading } from '../Loading'
 import { SwarmButton } from '../SwarmButton'
 import { SwarmDivider } from '../SwarmDivider'
@@ -45,10 +46,12 @@ export function BuyAndSwap({ mode }: Props) {
   const [hasSwapped, setSwapped] = useState(false)
   const [userInputSwap, setUserInputSwap] = useState<string | null>(null)
   const [price, setPrice] = useState(DaiToken.fromDecimal('0.6'))
+  const [minXdai, setMinXdai] = useState(0.1)
+  const [minXbzz, setMinXbzz] = useState(0.1)
   const [error, setError] = useState<string | null>(null)
   const [daiToBuy, setDaiToBuy] = useState<DaiToken | null>(null)
-  const [bzzAfterSwap, setBzzAfterSwap] = useState<BzzToken | null>(null)
-  const [daiAfterSwap, setDaiAfterSwap] = useState<DaiToken | null>(null)
+  const [bzzAfterSwap, setBzzAfterSwap] = useState(minXdai)
+  const [daiAfterSwap, setDaiAfterSwap] = useState(minXbzz)
 
   const { rpcProviderUrl, isDesktop, desktopUrl } = useContext(SettingsContext)
   const { nodeAddresses, nodeInfo } = useContext(BeeContext)
@@ -63,7 +66,16 @@ export function BuyAndSwap({ mode }: Props) {
     getBzzPriceAsDai(desktopUrl).then(setPrice).catch(console.error)
   }, [desktopUrl])
 
-  // Set the initial xDAI to swap
+  // Recalculate xDAI to buy, if price changes
+  useEffect(() => {
+    const finalDaiAmount = calculateDaiToBuy(daiAfterSwap, bzzAfterSwap)
+    // eslint-disable-next-line no-console
+    console.log('finalDaiAmount: ', finalDaiAmount)
+    const daiObj = DaiToken.fromDecimal(finalDaiAmount.toString())
+    setDaiToBuy(daiObj)
+  }, [price])
+
+  /*// Set the initial xDAI to swap
   useEffect(() => {
     if (!balance || userInputSwap) {
       return
@@ -78,9 +90,9 @@ export function BuyAndSwap({ mode }: Props) {
       // Balance is low, halve the amount
       setDaiToBuy(new DaiToken(balance.dai.toBigNumber.dividedToIntegerBy(2)))
     }
-  }, [balance, userInputSwap])
+  }, [balance, userInputSwap])*/
 
-  // Set the xDAI to swap based on user input
+  /*// Set the xDAI to swap based on user input
   useEffect(() => {
     setError(null)
     try {
@@ -95,10 +107,10 @@ export function BuyAndSwap({ mode }: Props) {
     } catch {
       setError('Cannot parse xDAI amount')
     }
-  }, [userInputSwap])
+  }, [userInputSwap])*/
 
   // Calculate the amount of tokens after swap
-  useEffect(() => {
+  /*useEffect(() => {
     if (!balance || !daiToBuy || error) {
       return
     }
@@ -115,7 +127,7 @@ export function BuyAndSwap({ mode }: Props) {
     } else if (bzzAfterSwap.toDecimal.lt(MINIMUM_XBZZ)) {
       setError(`Must have at least ${MINIMUM_XBZZ} xBZZ after swap!`)
     }
-  }, [error, balance, daiToBuy, price])
+  }, [error, balance, daiToBuy, price])*/
 
   if (!balance || !nodeAddresses || !daiToBuy || !bzzAfterSwap || !daiAfterSwap) {
     return <Loading />
@@ -206,6 +218,30 @@ export function BuyAndSwap({ mode }: Props) {
     }
   }
 
+  function changeBzz(event: React.ChangeEvent<HTMLInputElement>) {
+    if (Number(event.target.value) > minXbzz) {
+      setBzzAfterSwap(Number(event.target.value))
+      const finalDaiAmount = calculateDaiToBuy(daiAfterSwap, Number(event.target.value))
+      const daiObj = DaiToken.fromDecimal(finalDaiAmount.toString())
+      setDaiToBuy(daiObj)
+    }
+  }
+
+  function changeDai(event: React.ChangeEvent<HTMLInputElement>) {
+    if (Number(event.target.value) > minXdai) {
+      setDaiAfterSwap(Number(event.target.value))
+      const finalDaiAmount = calculateDaiToBuy(Number(event.target.value), bzzAfterSwap)
+      const daiObj = DaiToken.fromDecimal(finalDaiAmount.toString())
+      setDaiToBuy(daiObj)
+    }
+  }
+
+  function calculateDaiToBuy(daiAmount: number, bzzAmount: number) {
+    const PRICE_VOLATILITY_FACTOR = 1.05
+
+    return daiAmount + bzzAmount * (Number(price.toDecimal) * PRICE_VOLATILITY_FACTOR)
+  }
+
   return (
     <>
       <Box mb={2}>
@@ -224,44 +260,38 @@ export function BuyAndSwap({ mode }: Props) {
         </Typography>
       </Box>
       <SwarmDivider mb={4} />
-      <Box mb={4}>
-        <Typography>
-          Your current balance is {balance.dai.toSignificantDigits(4)} xDAI and {balance.bzz.toSignificantDigits(4)}{' '}
-          xBZZ.
-        </Typography>
-      </Box>
-      <Box mb={4}>
-        <SwarmTextInput
-          label="xDAI to swap"
-          defaultValue={daiToBuy.toSignificantDigits(4)}
-          placeholder={daiToBuy.toSignificantDigits(4)}
-          name="x"
-          onChange={event => setUserInputSwap(event.target.value)}
-        />
-        {error && <Typography>{error}</Typography>}
-      </Box>
       <Box mb={0.25}>
-        <ExpandableListItem
-          label="Resulting xDAI balance after operation"
-          value={`${daiAfterSwap.toSignificantDigits(4)} xDAI`}
+        <Typography>
+          {'Resulting xDAI balance after funds are received. You will need minimum '}
+          {minXdai}
+          {' xDAI'}
+        </Typography>
+        <TextField
+          label="xDAI"
+          value={daiAfterSwap}
+          onChange={changeDai}
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
         />
       </Box>
       <Box mb={2}>
-        <ExpandableListItem
-          label="Resulting xBZZ balance after operation"
-          value={`${bzzAfterSwap.toSignificantDigits(4)} xBZZ`}
+        <Typography>
+          {'Resulting xBZZ balance after funds are received. You will need minimum '}
+          {minXbzz}
+          {' xBZZ'}
+        </Typography>
+        <TextField
+          label="xBZZ"
+          value={bzzAfterSwap}
+          onChange={changeBzz}
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
         />
       </Box>
-      <ExpandableListItemActions>
-        <SwarmButton
-          iconType={Check}
-          onClick={onSwap}
-          disabled={hasSwapped || loading || error !== null}
-          loading={loading}
-        >
-          {canUpgradeToLightNode ? 'Swap Now and Upgrade' : 'Swap Now'}
-        </SwarmButton>
-      </ExpandableListItemActions>
     </>
   )
 }
