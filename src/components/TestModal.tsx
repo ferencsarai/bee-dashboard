@@ -59,7 +59,7 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
   return (
     <div>
       <Button variant="contained" onClick={handleClickOpen} startIcon={icon}>
-        {'Modal'}
+        {'Upgrade Node'}
       </Button>
       <Dialog
         open={open}

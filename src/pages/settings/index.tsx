@@ -79,15 +79,7 @@ export default function SettingsPage(): ReactElement {
 
   return (
     <>
-      <WithdrawDepositModal
-        successMessage="jajdejo"
-        errorMessage="never seen this :("
-        dialogMessage="Akár egy hosszabb dialog Mesg. Tényleg lehet hosszabb."
-        label="Title"
-        action={handleAction}
-      />
       <TestModal someParam="paremOne" otherParam={5} />
-      <TestModalTwo someParam="paramTwo" otherParam={33} />
       <ExpandableList label="API Settings" defaultOpen>
         <ExpandableListItemInput
           label="Bee API"

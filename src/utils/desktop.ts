@@ -42,16 +42,17 @@ export function upgradeToFullNode(desktopUrl: string, rpcProvider: string): Prom
 }
 
 export async function addStake(desktopUrl: string, stakeAmount: bigint): Promise<void> {
-  await postJson(`${desktopUrl}/stake/${stakeAmount}`)
+  await postJson(`${desktopUrl}/stake`, { amount: stakeAmount.toString() })
 }
 
 export async function getStakeAmount(desktopUrl: string): Promise<bigint> {
   const result = await getJson(`${desktopUrl}/stake`)
+
   return result.stakedAmount
 }
 
 export async function getRedistributionState(desktopUrl: string): Promise<object> {
-  return getJson(`${desktopUrl}/redistributionstate`)
+  return await getJson(`${desktopUrl}/`)
 }
 
 export async function setJsonRpcInDesktop(desktopUrl: string, value: string): Promise<void> {
