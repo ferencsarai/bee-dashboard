@@ -37,13 +37,13 @@ export function BuyAndSwap({ mode }: Props) {
   const [loading, setLoading] = useState(false)
   const [hasSwapped, setSwapped] = useState(false)
   const [price, setPrice] = useState(DaiToken.fromDecimal('0.6'))
-  const [minXdai, setMinXdai] = useState(0.1)
-  const [minXbzz, setMinXbzz] = useState(0.1)
+  const minXdai = 1
+  const minXbzz = mode === 'fullnode' ? 10 : 0.1
   const [oldBalance, setOldBalance] = useState<DaiToken | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [daiToBuy, setDaiToBuy] = useState<DaiToken | null>(null)
-  const [bzzAfterSwap, setBzzAfterSwap] = useState(minXdai)
-  const [daiAfterSwap, setDaiAfterSwap] = useState(minXbzz)
+  const [bzzAfterSwap, setBzzAfterSwap] = useState(minXbzz)
+  const [daiAfterSwap, setDaiAfterSwap] = useState(minXdai)
 
   const { rpcProviderUrl, isDesktop, desktopUrl } = useContext(SettingsContext)
   const { nodeAddresses, nodeInfo } = useContext(BeeContext)
