@@ -6,9 +6,7 @@ import ExpandableListItemInput from '../../components/ExpandableListItemInput'
 import { Context as BeeContext } from '../../providers/Bee'
 import { Context as SettingsContext } from '../../providers/Settings'
 import { getDesktopConfiguration, restartBeeNode, setJsonRpcInDesktop } from '../../utils/desktop'
-import WithdrawDepositModal from '../../components/WithdrawDepositModal'
 import TestModal from '../../components/TestModal'
-import TestModalTwo from '../../components/TestModalTwo'
 
 export default function SettingsPage(): ReactElement {
   const {

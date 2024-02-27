@@ -5,14 +5,14 @@ import { ReactElement, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import ArrowDown from 'remixicon-react/ArrowDownCircleLineIcon'
 import Check from 'remixicon-react/CheckLineIcon'
-import ExpandableListItem from '../../components/ExpandableListItem'
-import ExpandableListItemActions from '../../components/ExpandableListItemActions'
-import ExpandableListItemKey from '../../components/ExpandableListItemKey'
-import { HistoryHeader } from '../../components/HistoryHeader'
-import { Loading } from '../../components/Loading'
-import { SwarmButton } from '../../components/SwarmButton'
-import { SwarmDivider } from '../../components/SwarmDivider'
-import { SwarmTextInput } from '../../components/SwarmTextInput'
+import ExpandableListItem from '../ExpandableListItem'
+import ExpandableListItemActions from '../ExpandableListItemActions'
+import ExpandableListItemKey from '../ExpandableListItemKey'
+import { HistoryHeader } from '../HistoryHeader'
+import { Loading } from '../Loading'
+import { SwarmButton } from '../SwarmButton'
+import { SwarmDivider } from '../SwarmDivider'
+import { SwarmTextInput } from '../SwarmTextInput'
 import { BzzToken, BZZ_DECIMAL_PLACES } from '../../models/BzzToken'
 import { DaiToken } from '../../models/DaiToken'
 import { Context as BeeContext } from '../../providers/Bee'
@@ -36,13 +36,17 @@ const MINIMUM_XBZZ = '0.1'
 
 const GENERIC_SWAP_FAILED_ERROR_MESSAGE = 'Failed to swap. The full error is printed to the console.'
 
-export function SwapXdaitoBzz() {
+interface Props {
+  mode: string
+}
+
+export function BuyAndSwap({ mode }: Props) {
   const [loading, setLoading] = useState(false)
   const [hasSwapped, setSwapped] = useState(false)
   const [userInputSwap, setUserInputSwap] = useState<string | null>(null)
   const [price, setPrice] = useState(DaiToken.fromDecimal('0.6'))
   const [error, setError] = useState<string | null>(null)
-  const [daiToSwap, setDaiToSwap] = useState<DaiToken | null>(null)
+  const [daiToBuy, setDaiToBuy] = useState<DaiToken | null>(null)
   const [bzzAfterSwap, setBzzAfterSwap] = useState<BzzToken | null>(null)
   const [daiAfterSwap, setDaiAfterSwap] = useState<DaiToken | null>(null)
 
@@ -69,10 +73,10 @@ export function SwapXdaitoBzz() {
 
     if (balance.dai.toDecimal.isGreaterThanOrEqualTo(minimumOptimalValue)) {
       // Balance has at least 1 + MINIMUM_XDAI xDai
-      setDaiToSwap(balance.dai.minusBaseUnits('1'))
+      setDaiToBuy(balance.dai.minusBaseUnits('1'))
     } else {
       // Balance is low, halve the amount
-      setDaiToSwap(new DaiToken(balance.dai.toBigNumber.dividedToIntegerBy(2)))
+      setDaiToBuy(new DaiToken(balance.dai.toBigNumber.dividedToIntegerBy(2)))
     }
   }, [balance, userInputSwap])
 
@@ -82,7 +86,7 @@ export function SwapXdaitoBzz() {
     try {
       if (userInputSwap) {
         const dai = DaiToken.fromDecimal(userInputSwap)
-        setDaiToSwap(dai)
+        setDaiToBuy(dai)
 
         if (dai.toDecimal.lte(0)) {
           setError('xDAI to swap must be a positive number')
@@ -95,13 +99,13 @@ export function SwapXdaitoBzz() {
 
   // Calculate the amount of tokens after swap
   useEffect(() => {
-    if (!balance || !daiToSwap || error) {
+    if (!balance || !daiToBuy || error) {
       return
     }
-    const daiAfterSwap = new DaiToken(balance.dai.toBigNumber.minus(daiToSwap.toBigNumber))
+    const daiAfterSwap = new DaiToken(balance.dai.toBigNumber.minus(daiToBuy.toBigNumber))
     setDaiAfterSwap(daiAfterSwap)
     const tokensConverted = BzzToken.fromDecimal(
-      daiToSwap.toBigNumber.dividedBy(price.toBigNumber).decimalPlaces(BZZ_DECIMAL_PLACES),
+      daiToBuy.toBigNumber.dividedBy(price.toBigNumber).decimalPlaces(BZZ_DECIMAL_PLACES),
     )
     const bzzAfterSwap = new BzzToken(tokensConverted.toBigNumber.plus(balance.bzz.toBigNumber))
     setBzzAfterSwap(bzzAfterSwap)
@@ -111,9 +115,9 @@ export function SwapXdaitoBzz() {
     } else if (bzzAfterSwap.toDecimal.lt(MINIMUM_XBZZ)) {
       setError(`Must have at least ${MINIMUM_XBZZ} xBZZ after swap!`)
     }
-  }, [error, balance, daiToSwap, price])
+  }, [error, balance, daiToBuy, price])
 
-  if (!balance || !nodeAddresses || !daiToSwap || !bzzAfterSwap || !daiAfterSwap) {
+  if (!balance || !nodeAddresses || !daiToBuy || !bzzAfterSwap || !daiAfterSwap) {
     return <Loading />
   }
 
@@ -169,14 +173,14 @@ export function SwapXdaitoBzz() {
   }
 
   async function onSwap() {
-    if (hasSwapped || !daiToSwap) {
+    if (hasSwapped || !daiToBuy) {
       return
     }
     setLoading(true)
     setSwapped(true)
 
     try {
-      await performSwapWithChecks(daiToSwap)
+      await performSwapWithChecks(daiToBuy)
       const message = canUpgradeToLightNode
         ? 'Successfully swapped. Beginning light node upgrade...'
         : 'Successfully swapped. Balances will refresh soon. You may now navigate away.'
@@ -205,12 +209,18 @@ export function SwapXdaitoBzz() {
   return (
     <>
       <Box mb={2}>
-        <Typography style={{ fontWeight: 'bold' }}>Swap some xDAI to xBZZ</Typography>
+        <Typography style={{ fontWeight: 'bold' }}>
+          {'Send in at least '}
+          {daiToBuy.toSignificantDigits(2).toString()}
+          {' to this address:'}
+        </Typography>
+      </Box>
+      <Box mb={0.25}>
+        <ExpandableListItemKey label="Funding wallet address" value={nodeAddresses.ethereum} expanded />
       </Box>
       <Box mb={4}>
         <Typography>
-          You need to swap xDAI to xBZZ in order to use Swarm. Make sure to keep at least {MINIMUM_XDAI} xDAI in order
-          to pay for transaction costs on the network.
+          Make sure to keep at least {MINIMUM_XDAI} xDAI in order to pay for transaction costs on the network.
         </Typography>
       </Box>
       <SwarmDivider mb={4} />
@@ -223,28 +233,22 @@ export function SwapXdaitoBzz() {
       <Box mb={4}>
         <SwarmTextInput
           label="xDAI to swap"
-          defaultValue={daiToSwap.toSignificantDigits(4)}
-          placeholder={daiToSwap.toSignificantDigits(4)}
+          defaultValue={daiToBuy.toSignificantDigits(4)}
+          placeholder={daiToBuy.toSignificantDigits(4)}
           name="x"
           onChange={event => setUserInputSwap(event.target.value)}
         />
         {error && <Typography>{error}</Typography>}
       </Box>
-      <Box mb={4}>
-        <ArrowDown size={24} color="#aaaaaa" />
-      </Box>
-      <Box mb={0.25}>
-        <ExpandableListItemKey label="Funding wallet address" value={nodeAddresses.ethereum} expanded />
-      </Box>
       <Box mb={0.25}>
         <ExpandableListItem
-          label="Resulting xDAI balance after swap"
+          label="Resulting xDAI balance after operation"
           value={`${daiAfterSwap.toSignificantDigits(4)} xDAI`}
         />
       </Box>
       <Box mb={2}>
         <ExpandableListItem
-          label="Resulting xBZZ balance after swap"
+          label="Resulting xBZZ balance after operation"
           value={`${bzzAfterSwap.toSignificantDigits(4)} xBZZ`}
         />
       </Box>

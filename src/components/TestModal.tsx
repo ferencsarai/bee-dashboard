@@ -10,8 +10,8 @@ import FormHelperText from '@material-ui/core/FormHelperText'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
-import BuyxDai from './justTesting/BuyxDai'
-import { SwapXdaitoBzz } from './justTesting/SwapDaiToBzz'
+import SwitchMode from './justTesting/SwitchMode'
+import { BuyAndSwap } from './justTesting/BuyAndSwap'
 import PresentSuccess from './justTesting/PresentSuccess'
 import Slide from '@material-ui/core/Slide'
 
@@ -25,6 +25,7 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
   const [open, setOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [value, setValue] = useState(0)
+  const [mode, setMode] = useState('lightnode')
 
   const handleClickOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
     setOpen(true)
@@ -33,6 +34,10 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
 
   const handleClose = () => {
     setOpen(false)
+  }
+
+  const handleModeSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMode(event.target.value)
   }
 
   const handleAction = () => {
@@ -44,9 +49,9 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
   function switchComponent() {
     switch (currentStep) {
       case 0:
-        return <BuyxDai />
+        return <SwitchMode mode={mode} handleModeSwitch={handleModeSwitch} />
       case 1:
-        return <SwapXdaitoBzz />
+        return <BuyAndSwap mode={mode} />
       case 2:
         return <PresentSuccess />
       default:
