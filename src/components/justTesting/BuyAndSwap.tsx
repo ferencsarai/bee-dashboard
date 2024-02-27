@@ -1,20 +1,12 @@
 import { BeeModes } from '@ethersphere/bee-js'
 import { Box, Typography } from '@material-ui/core'
 import { useSnackbar } from 'notistack'
-import React, { ReactElement, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import ArrowDown from 'remixicon-react/ArrowDownCircleLineIcon'
-import Check from 'remixicon-react/CheckLineIcon'
-import ExpandableListItem from '../ExpandableListItem'
-import ExpandableListItemActions from '../ExpandableListItemActions'
 import ExpandableListItemKey from '../ExpandableListItemKey'
-import { HistoryHeader } from '../HistoryHeader'
 import { TextField, Button } from '@material-ui/core'
 import { Loading } from '../Loading'
-import { SwarmButton } from '../SwarmButton'
 import { SwarmDivider } from '../SwarmDivider'
-import { SwarmTextInput } from '../SwarmTextInput'
-import { BzzToken, BZZ_DECIMAL_PLACES } from '../../models/BzzToken'
 import { DaiToken } from '../../models/DaiToken'
 import { Context as BeeContext } from '../../providers/Bee'
 import { Context as SettingsContext } from '../../providers/Settings'
@@ -44,10 +36,10 @@ interface Props {
 export function BuyAndSwap({ mode }: Props) {
   const [loading, setLoading] = useState(false)
   const [hasSwapped, setSwapped] = useState(false)
-  const [userInputSwap, setUserInputSwap] = useState<string | null>(null)
   const [price, setPrice] = useState(DaiToken.fromDecimal('0.6'))
   const [minXdai, setMinXdai] = useState(0.1)
   const [minXbzz, setMinXbzz] = useState(0.1)
+  const [oldBalance, setOldBalance] = useState<DaiToken | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [daiToBuy, setDaiToBuy] = useState<DaiToken | null>(null)
   const [bzzAfterSwap, setBzzAfterSwap] = useState(minXdai)
@@ -75,59 +67,18 @@ export function BuyAndSwap({ mode }: Props) {
     setDaiToBuy(daiObj)
   }, [price])
 
-  /*// Set the initial xDAI to swap
   useEffect(() => {
-    if (!balance || userInputSwap) {
+    if (oldBalance === null && balance) {
+      setOldBalance(DaiToken.fromDecimal(balance.dai.toDecimal))
+
       return
     }
 
-    const minimumOptimalValue = DaiToken.fromDecimal('1').plusBaseUnits(MINIMUM_XDAI).toDecimal
-
-    if (balance.dai.toDecimal.isGreaterThanOrEqualTo(minimumOptimalValue)) {
-      // Balance has at least 1 + MINIMUM_XDAI xDai
-      setDaiToBuy(balance.dai.minusBaseUnits('1'))
-    } else {
-      // Balance is low, halve the amount
-      setDaiToBuy(new DaiToken(balance.dai.toBigNumber.dividedToIntegerBy(2)))
+    if (oldBalance !== null && balance?.dai.toDecimal && balance?.dai.toDecimal.gt(oldBalance.toDecimal)) {
+      // eslint-disable-next-line no-console
+      console.log('New balance: ', balance)
     }
-  }, [balance, userInputSwap])*/
-
-  /*// Set the xDAI to swap based on user input
-  useEffect(() => {
-    setError(null)
-    try {
-      if (userInputSwap) {
-        const dai = DaiToken.fromDecimal(userInputSwap)
-        setDaiToBuy(dai)
-
-        if (dai.toDecimal.lte(0)) {
-          setError('xDAI to swap must be a positive number')
-        }
-      }
-    } catch {
-      setError('Cannot parse xDAI amount')
-    }
-  }, [userInputSwap])*/
-
-  // Calculate the amount of tokens after swap
-  /*useEffect(() => {
-    if (!balance || !daiToBuy || error) {
-      return
-    }
-    const daiAfterSwap = new DaiToken(balance.dai.toBigNumber.minus(daiToBuy.toBigNumber))
-    setDaiAfterSwap(daiAfterSwap)
-    const tokensConverted = BzzToken.fromDecimal(
-      daiToBuy.toBigNumber.dividedBy(price.toBigNumber).decimalPlaces(BZZ_DECIMAL_PLACES),
-    )
-    const bzzAfterSwap = new BzzToken(tokensConverted.toBigNumber.plus(balance.bzz.toBigNumber))
-    setBzzAfterSwap(bzzAfterSwap)
-
-    if (daiAfterSwap.toDecimal.lt(MINIMUM_XDAI)) {
-      setError(`Must keep at least ${MINIMUM_XDAI} xDAI after swap!`)
-    } else if (bzzAfterSwap.toDecimal.lt(MINIMUM_XBZZ)) {
-      setError(`Must have at least ${MINIMUM_XBZZ} xBZZ after swap!`)
-    }
-  }, [error, balance, daiToBuy, price])*/
+  }, [balance])
 
   if (!balance || !nodeAddresses || !daiToBuy || !bzzAfterSwap || !daiAfterSwap) {
     return <Loading />
