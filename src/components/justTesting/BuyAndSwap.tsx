@@ -77,6 +77,12 @@ export function BuyAndSwap({ mode }: Props) {
     if (oldBalance !== null && balance?.dai.toDecimal && balance?.dai.toDecimal.gt(oldBalance.toDecimal)) {
       // eslint-disable-next-line no-console
       console.log('New balance: ', balance)
+
+      if (daiToBuy && balance.dai.toDecimal.gt(daiToBuy.toDecimal)) {
+        enqueueSnackbar(<span>{'Funds received'}</span>, { variant: 'success' })
+      } else {
+        enqueueSnackbar(<span>{'Not enough xDAI was sent in'}</span>, { variant: 'error' })
+      }
     }
   }, [balance])
 

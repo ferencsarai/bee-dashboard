@@ -22,7 +22,6 @@ export default function SwitchMode({ mode, handleModeSwitch }: Props) {
 
   return (
     <Box mb={0.25}>
-      <ExpandableListItemKey label="Send xDAI to this address" value={nodeAddresses.ethereum} expanded />
       <div>
         <p>Chose the mode:</p>
         <RadioGroup value={mode} onChange={handleModeSwitch}>

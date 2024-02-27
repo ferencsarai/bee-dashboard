@@ -59,7 +59,7 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
     }
   }
 
-  const steps = ['Send xDAI', 'Swap', 'Hármas lépés']
+  const steps = ['Choose mode', 'Fund', 'Stake BZZ']
 
   return (
     <div>
