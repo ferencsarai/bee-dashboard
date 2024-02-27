@@ -12,8 +12,10 @@ import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
 import SwitchMode from './justTesting/SwitchMode'
 import { BuyAndSwap } from './justTesting/BuyAndSwap'
-import PresentSuccess from './justTesting/PresentSuccess'
+import PresentSuccess from './justTesting/Stake'
 import Slide from '@material-ui/core/Slide'
+import { Waiting } from './Waiting'
+import { CircularProgress } from '@material-ui/core'
 
 interface Props {
   someParam: string
@@ -24,6 +26,7 @@ interface Props {
 export default function TestModal({ someParam, otherParam, icon }: Props) {
   const [open, setOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
+  const [actionTriggered, setActionTriggered] = useState(false)
   const [value, setValue] = useState(0)
   const [mode, setMode] = useState('lightnode')
 
@@ -51,9 +54,9 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
       case 0:
         return <SwitchMode mode={mode} handleModeSwitch={handleModeSwitch} />
       case 1:
-        return <BuyAndSwap mode={mode} />
+        return <BuyAndSwap mode={mode} setCurrentStep={setCurrentStep} />
       case 2:
-        return <PresentSuccess />
+        return <PresentSuccess isActionTriggered={actionTriggered} />
       default:
         return <p>{'Error'}</p>
     }
@@ -88,6 +91,21 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
+          {currentStep === 0 && (
+            <Button variant="contained" color="primary" onClick={() => setCurrentStep(1)}>
+              Next
+            </Button>
+          )}
+          {currentStep === 1 && (
+            <Button variant="contained" color="primary" disabled>
+              <CircularProgress />
+            </Button>
+          )}
+          {currentStep === 2 && (
+            <Button variant="contained" color="primary" onClick={() => setActionTriggered(true)}>
+              Stake
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </div>

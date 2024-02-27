@@ -5,9 +5,17 @@ import { Typography, TextField, Button } from '@material-ui/core'
 
 const BZZ = '00000000000000000'
 
-export default function PresentSuccess() {
+interface Props {
+  isActionTriggered: boolean
+}
+
+export default function Stake({ isActionTriggered }: Props) {
   const { desktopUrl } = useContext(SettingsContext)
   const [amount, setAmount] = useState('10')
+
+  useEffect(() => {
+    if (isActionTriggered) stakeTest()
+  }, [isActionTriggered])
 
   async function stakeTest() {
     const result = await addStake(desktopUrl, BigInt(amount + BZZ))
@@ -20,10 +28,6 @@ export default function PresentSuccess() {
       setAmount(event.target.value)
     }
   }
-
-  useEffect(() => {
-    //stakeTest()
-  }, [])
 
   return (
     <>
@@ -40,9 +44,6 @@ export default function PresentSuccess() {
             shrink: true,
           }}
         />
-        <Button variant="contained" color="primary" onClick={stakeTest}>
-          Stake
-        </Button>
       </div>
     </>
   )

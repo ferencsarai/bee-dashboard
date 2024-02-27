@@ -31,14 +31,15 @@ const GENERIC_SWAP_FAILED_ERROR_MESSAGE = 'Failed to swap. The full error is pri
 
 interface Props {
   mode: string
+  setCurrentStep: (newStep: number) => void
 }
 
-export function BuyAndSwap({ mode }: Props) {
+export function BuyAndSwap({ mode, setCurrentStep }: Props) {
   const [loading, setLoading] = useState(false)
   const [hasSwapped, setSwapped] = useState(false)
   const [price, setPrice] = useState(DaiToken.fromDecimal('0.6'))
-  const minXdai = 1
-  const minXbzz = mode === 'fullnode' ? 10 : 0.1
+  const minXdai = 0.001
+  const minXbzz = mode === 'fullnode' ? 0.001 : 0.1
   const [oldBalance, setOldBalance] = useState<DaiToken | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [daiToBuy, setDaiToBuy] = useState<DaiToken | null>(null)
@@ -67,6 +68,7 @@ export function BuyAndSwap({ mode }: Props) {
     setDaiToBuy(daiObj)
   }, [price])
 
+  // Look for balance change
   useEffect(() => {
     if (oldBalance === null && balance) {
       setOldBalance(DaiToken.fromDecimal(balance.dai.toDecimal))
@@ -79,7 +81,8 @@ export function BuyAndSwap({ mode }: Props) {
       console.log('New balance: ', balance)
 
       if (daiToBuy && balance.dai.toDecimal.gt(daiToBuy.toDecimal)) {
-        enqueueSnackbar(<span>{'Funds received'}</span>, { variant: 'success' })
+        enqueueSnackbar(<span>{'Funds received. Performing swap...'}</span>, { variant: 'success' })
+        startSwap()
       } else {
         enqueueSnackbar(<span>{'Not enough xDAI was sent in'}</span>, { variant: 'error' })
       }
@@ -141,7 +144,7 @@ export function BuyAndSwap({ mode }: Props) {
     await wrapWithSwapError(sendSwapRequest(daiToSwap), GENERIC_SWAP_FAILED_ERROR_MESSAGE)
   }
 
-  async function onSwap() {
+  async function startSwap() {
     if (hasSwapped || !daiToBuy) {
       return
     }
@@ -149,13 +152,16 @@ export function BuyAndSwap({ mode }: Props) {
     setSwapped(true)
 
     try {
-      await performSwapWithChecks(daiToBuy)
+      const daiAmount = bzzAfterSwap * Number(price.toFixedDecimal(4))
+      await performSwapWithChecks(DaiToken.fromDecimal(daiAmount.toString()))
       const message = canUpgradeToLightNode
         ? 'Successfully swapped. Beginning light node upgrade...'
-        : 'Successfully swapped. Balances will refresh soon. You may now navigate away.'
+        : 'Successfully swapped. Now you can stake some BZZ.'
       enqueueSnackbar(message, { variant: 'success' })
 
       if (canUpgradeToLightNode) await restart()
+
+      if (mode === 'fullnode') setCurrentStep(2)
     } catch (error) {
       if (isSwapError(error)) {
         // we have a custom and user friendly error message
