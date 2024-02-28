@@ -38,8 +38,8 @@ export function BuyAndSwap({ mode, setCurrentStep }: Props) {
   const [loading, setLoading] = useState(false)
   const [hasSwapped, setSwapped] = useState(false)
   const [price, setPrice] = useState(DaiToken.fromDecimal('0.6'))
-  const minXdai = 0.001
-  const minXbzz = mode === 'fullnode' ? 0.001 : 0.1
+  const minXdai = 1
+  const minXbzz = mode === 'fullnode' ? 10 : 0.1
   const [oldBalance, setOldBalance] = useState<DaiToken | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [daiToBuy, setDaiToBuy] = useState<DaiToken | null>(null)
@@ -211,7 +211,7 @@ export function BuyAndSwap({ mode, setCurrentStep }: Props) {
         <Typography style={{ fontWeight: 'bold' }}>
           {'Send in at least '}
           {daiToBuy.toSignificantDigits(2).toString()}
-          {' to this address:'}
+          {' xDAI to this address:'}
         </Typography>
       </Box>
       <Box mb={0.25}>

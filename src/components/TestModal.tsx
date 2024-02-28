@@ -8,7 +8,7 @@ import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
 import SwitchMode from './justTesting/SwitchMode'
 import { BuyAndSwap } from './justTesting/BuyAndSwap'
-import PresentSuccess from './justTesting/Stake'
+import Stake from './justTesting/Stake'
 import { CircularProgress } from '@material-ui/core'
 
 interface Props {
@@ -19,9 +19,8 @@ interface Props {
 
 export default function TestModal({ someParam, otherParam, icon }: Props) {
   const [open, setOpen] = useState(false)
-  const [currentStep, setCurrentStep] = useState(0)
+  const [currentStep, setCurrentStep] = useState(2)
   const [actionTriggered, setActionTriggered] = useState(false)
-  const [value, setValue] = useState(0)
   const [mode, setMode] = useState('lightnode')
 
   const handleClickOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -30,6 +29,9 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
   }
 
   const handleClose = () => {
+    setCurrentStep(0)
+    setMode('lightnode')
+    setActionTriggered(false)
     setOpen(false)
   }
 
@@ -46,7 +48,7 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
       case 1:
         return <BuyAndSwap mode={mode} setCurrentStep={setCurrentStep} />
       case 2:
-        return <PresentSuccess isActionTriggered={actionTriggered} />
+        return <Stake isActionTriggered={actionTriggered} />
       default:
         return <p>{'Error'}</p>
     }
@@ -92,7 +94,12 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
             </Button>
           )}
           {currentStep === 2 && (
-            <Button variant="contained" color="primary" onClick={() => setActionTriggered(true)}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setActionTriggered(true)}
+              disabled={actionTriggered}
+            >
               Stake
             </Button>
           )}
