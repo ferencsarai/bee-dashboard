@@ -73,7 +73,6 @@ export default function Stake({ isActionTriggered, close }: Props) {
           value={amount}
           onChange={handleChange}
           type="number"
-
           InputLabelProps={{
             shrink: true,
           }}

@@ -6,6 +6,7 @@ import ExpandableListItemInput from '../../components/ExpandableListItemInput'
 import { Context as BeeContext } from '../../providers/Bee'
 import { Context as SettingsContext } from '../../providers/Settings'
 import { getDesktopConfiguration, restartBeeNode, setJsonRpcInDesktop } from '../../utils/desktop'
+import UpgradeModal from '../../components/UpgradeModal'
 
 export default function SettingsPage(): ReactElement {
   const {
@@ -61,6 +62,7 @@ export default function SettingsPage(): ReactElement {
 
   return (
     <>
+      <UpgradeModal />
       <ExpandableList label="API Settings" defaultOpen>
         <ExpandableListItemInput
           label="Bee API"

@@ -56,6 +56,7 @@ export default function BuyAndSwap({ mode, setCurrentStep }: Props) {
 
   // Fetch current price of BZZ
   useEffect(() => {
+    // eslint-disable-next-line no-console
     getBzzPriceAsDai(desktopUrl).then(setPrice).catch(console.error)
   }, [desktopUrl])
 
