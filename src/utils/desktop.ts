@@ -45,6 +45,12 @@ export async function addStake(desktopUrl: string, stakeAmount: bigint): Promise
   await postJson(`${desktopUrl}/stake`, { amount: stakeAmount.toString() })
 }
 
+export async function getStakeAmount(desktopUrl: string): Promise<bigint> {
+  const result = await getJson(`${desktopUrl}/stake`)
+
+  return result.stakedAmount
+}
+
 export async function setJsonRpcInDesktop(desktopUrl: string, value: string): Promise<void> {
   await updateDesktopConfiguration(desktopUrl, {
     'blockchain-rpc-endpoint': value,
