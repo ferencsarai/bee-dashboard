@@ -10,6 +10,7 @@ import SwitchMode from './justTesting/SwitchMode'
 import { BuyAndSwap } from './justTesting/BuyAndSwap'
 import Stake from './justTesting/Stake'
 import { CircularProgress } from '@material-ui/core'
+import { BeeModes } from '@ethersphere/bee-js'
 
 interface Props {
   someParam: string
@@ -19,9 +20,9 @@ interface Props {
 
 export default function TestModal({ someParam, otherParam, icon }: Props) {
   const [open, setOpen] = useState(false)
-  const [currentStep, setCurrentStep] = useState(2)
+  const [currentStep, setCurrentStep] = useState(0)
   const [actionTriggered, setActionTriggered] = useState(false)
-  const [mode, setMode] = useState('lightnode')
+  const [mode, setMode] = useState(BeeModes.LIGHT)
 
   const handleClickOpen = (e: React.MouseEvent<HTMLButtonElement>) => {
     setOpen(true)
@@ -30,13 +31,13 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
 
   const handleClose = () => {
     setCurrentStep(0)
-    setMode('lightnode')
+    setMode(BeeModes.LIGHT)
     setActionTriggered(false)
     setOpen(false)
   }
 
   const handleModeSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMode(event.target.value)
+    setMode(event.target.value as BeeModes)
   }
 
   const loadedComponent = switchComponent()
@@ -48,7 +49,7 @@ export default function TestModal({ someParam, otherParam, icon }: Props) {
       case 1:
         return <BuyAndSwap mode={mode} setCurrentStep={setCurrentStep} />
       case 2:
-        return <Stake isActionTriggered={actionTriggered} />
+        return <Stake isActionTriggered={actionTriggered} close={handleClose} />
       default:
         return <p>{'Error'}</p>
     }

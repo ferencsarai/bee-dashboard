@@ -6,6 +6,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import ExpandableListItemKey from '../ExpandableListItemKey'
 import { Context } from '../../providers/Bee'
 import { Context as BalanceProvider } from '../../providers/WalletBalance'
+import { BeeModes } from '@ethersphere/bee-js'
 
 interface Props {
   mode: string
@@ -26,12 +27,12 @@ export default function SwitchMode({ mode, handleModeSwitch }: Props) {
         <p>Chose the mode:</p>
         <RadioGroup value={mode} onChange={handleModeSwitch}>
           <FormControlLabel
-            value={'lightnode'}
+            value={BeeModes.LIGHT}
             control={<Radio />}
             label="Light node - Can upload files, but can't earn BZZ"
           />
           <FormControlLabel
-            value={'fullnode'}
+            value={BeeModes.FULL}
             control={<Radio />}
             label="Full node - Can upload files, can earn BZZ, need to stake min 10 BZZ"
           />

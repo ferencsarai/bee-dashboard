@@ -18,6 +18,7 @@ import {
   getDesktopConfiguration,
   performSwap,
   restartBeeNode,
+  upgradeToFullNode,
   upgradeToLightNode,
 } from '../../utils/desktop'
 import { Rpc } from '../../utils/rpc'
@@ -38,10 +39,10 @@ export function BuyAndSwap({ mode, setCurrentStep }: Props) {
   const [loading, setLoading] = useState(false)
   const [hasSwapped, setSwapped] = useState(false)
   const [price, setPrice] = useState(DaiToken.fromDecimal('0.6'))
-  const minXdai = 1
-  const minXbzz = mode === 'fullnode' ? 10 : 0.1
+  const minXdai = 0.01
+  const minXbzz = mode === BeeModes.FULL ? 0.001 : 0.1
   const [oldBalance, setOldBalance] = useState<DaiToken | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [moneyReceived, setMoneyReceived] = useState(false)
   const [daiToBuy, setDaiToBuy] = useState<DaiToken | null>(null)
   const [bzzAfterSwap, setBzzAfterSwap] = useState(minXbzz)
   const [daiAfterSwap, setDaiAfterSwap] = useState(minXdai)
@@ -70,24 +71,32 @@ export function BuyAndSwap({ mode, setCurrentStep }: Props) {
 
   // Look for balance change
   useEffect(() => {
+    if (moneyReceived) return
+
     if (oldBalance === null && balance) {
       setOldBalance(DaiToken.fromDecimal(balance.dai.toDecimal))
 
       return
     }
 
+    checkBalance()
+  }, [balance])
+
+  // Check if enough money was sent in, and start swapping, if yes
+  async function checkBalance() {
     if (oldBalance !== null && balance?.dai.toDecimal && balance?.dai.toDecimal.gt(oldBalance.toDecimal)) {
       // eslint-disable-next-line no-console
       console.log('New balance: ', balance)
 
       if (daiToBuy && balance.dai.toDecimal.gt(daiToBuy.toDecimal)) {
         enqueueSnackbar(<span>{'Funds received. Performing swap...'}</span>, { variant: 'success' })
-        startSwap()
+        setMoneyReceived(true)
+        await startSwap()
       } else {
         enqueueSnackbar(<span>{'Not enough xDAI was sent in'}</span>, { variant: 'error' })
       }
     }
-  }, [balance])
+  }
 
   if (!balance || !nodeAddresses || !daiToBuy || !bzzAfterSwap || !daiAfterSwap) {
     return <Loading />
@@ -127,11 +136,20 @@ export function BuyAndSwap({ mode, setCurrentStep }: Props) {
       'Unable to reach Desktop API, Swarm Desktop may not be running',
     )
 
-    if (canUpgradeToLightNode) {
+    if (canUpgradeToLightNode && mode === BeeModes.LIGHT) {
       desktopConfiguration = await wrapWithSwapError(
         upgradeToLightNode(desktopUrl, rpcProviderUrl),
         'Failed to update the configuration file with the new swap values using the Desktop API',
       )
+    }
+
+    if (mode === BeeModes.FULL) {
+      desktopConfiguration = await wrapWithSwapError(
+        upgradeToFullNode(desktopUrl, rpcProviderUrl),
+        'Failed to update the configuration file, probably swap was not successful',
+      )
+      // eslint-disable-next-line no-console
+      console.log('newConfig: ', desktopConfiguration)
     }
 
     if (!desktopConfiguration['blockchain-rpc-endpoint']) {
@@ -159,9 +177,13 @@ export function BuyAndSwap({ mode, setCurrentStep }: Props) {
         : 'Successfully swapped. Now you can stake some BZZ.'
       enqueueSnackbar(message, { variant: 'success' })
 
-      if (canUpgradeToLightNode) await restart()
+      if (mode === BeeModes.FULL) {
+        setCurrentStep(2)
 
-      if (mode === 'fullnode') setCurrentStep(2)
+        return
+      }
+
+      if (canUpgradeToLightNode) await restart()
     } catch (error) {
       if (isSwapError(error)) {
         // we have a custom and user friendly error message
