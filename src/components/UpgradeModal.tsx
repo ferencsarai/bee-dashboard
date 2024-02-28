@@ -65,8 +65,9 @@ export default function UpgradeModal({ icon }: Props) {
         onClose={handleClose}
         aria-labelledby="from-dialog-title"
         fullWidth
-        maxWidth={'xl'}
+        maxWidth={'lg'}
         transitionDuration={0}
+        PaperProps={{ style: { height: '600px' } }}
       >
         <DialogContent>
           <Stepper activeStep={currentStep} alternativeLabel>
@@ -76,7 +77,9 @@ export default function UpgradeModal({ icon }: Props) {
               </Step>
             ))}
           </Stepper>
-          {loadedComponent}
+          <div style={{ display: 'flex', flexDirection: 'column', height: '70%', justifyContent: 'space-around' }}>
+            {loadedComponent}
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
