@@ -41,6 +41,10 @@ export function upgradeToFullNode(desktopUrl: string, rpcProvider: string): Prom
   })
 }
 
+export async function addStake(desktopUrl: string, stakeAmount: bigint): Promise<void> {
+  await postJson(`${desktopUrl}/stake`, { amount: stakeAmount.toString() })
+}
+
 export async function setJsonRpcInDesktop(desktopUrl: string, value: string): Promise<void> {
   await updateDesktopConfiguration(desktopUrl, {
     'blockchain-rpc-endpoint': value,
