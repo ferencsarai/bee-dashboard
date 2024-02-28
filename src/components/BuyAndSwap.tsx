@@ -36,7 +36,7 @@ interface Props {
   setCurrentStep: (newStep: number) => void
 }
 
-export function BuyAndSwap({ mode, setCurrentStep }: Props) {
+export default function BuyAndSwap({ mode, setCurrentStep }: Props) {
   const [hasSwapped, setSwapped] = useState(false)
   const [price, setPrice] = useState(DaiToken.fromDecimal('0.6'))
   const minXdai = MINIMUM_XDAI
