@@ -15,6 +15,7 @@ import { Upload } from './pages/files/Upload'
 import { UploadLander } from './pages/files/UploadLander'
 import GiftCards from './pages/gift-code'
 import Info from './pages/info'
+import FileManager from './pages/filemanager'
 import LightModeRestart from './pages/restart/LightModeRestart'
 import Settings from './pages/settings'
 import { CreatePostageStampPage } from './pages/stamps/CreatePostageStampAdvancedPage'
@@ -57,6 +58,7 @@ export enum ROUTES {
   ACCOUNT_INVITATIONS = '/account/invitations',
   ACCOUNT_STAKING = '/account/staking',
   FDP = '/fdp',
+  FILEMANAGER = '/filemanager',
 }
 
 export const ACCOUNT_TABS = [
@@ -98,6 +100,7 @@ const BaseRouter = (): ReactElement => {
       <Route path={ROUTES.ACCOUNT_FEEDS_VIEW} element={<FeedSubpage />} />
       <Route path={ROUTES.ACCOUNT_STAKING} element={<AccountStaking />} />
       <Route path={ROUTES.FDP} element={<FDP />} />
+      <Route path={ROUTES.FILEMANAGER} element={<FileManager />} />
       {isDesktop && <Route path={ROUTES.ACCOUNT_INVITATIONS} element={<GiftCards />} />}
     </Routes>
   )
