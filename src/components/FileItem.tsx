@@ -6,6 +6,7 @@ import Database2FillIcon from 'remixicon-react/Database2FillIcon'
 import FileCopyLineIcon from 'remixicon-react/FileCopyLineIcon'
 import ShareFillIcon from 'remixicon-react/ShareFillIcon'
 import MoreOptions from './MoreOptions'
+import InfoIcon from './InfoIcon'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -46,6 +47,8 @@ const useStyles = makeStyles(() =>
       marginRight: '10px',
     },
     expires: {
+      display: 'flex',
+      alignItems: 'center',
       color: 'orange',
     },
     moreoptions: {
@@ -86,7 +89,9 @@ const FileItem = (props: Props): ReactElement => {
         <div className={classes.flexDisplay}>
           Shared with me <ShareFillIcon size="12" />
         </div>
-        <div className={classes.expires}>Expires {props.expires}</div>
+        <div className={classes.expires}>
+          Expires {props.expires} <InfoIcon />
+        </div>
         <div className={classes.moreoptions}>
           <MoreOptions text="..." />
         </div>
