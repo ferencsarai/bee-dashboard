@@ -1,6 +1,7 @@
 import { createStyles, makeStyles } from '@material-ui/core'
 import { ReactElement } from 'react'
 import FileItem from '../../components/FileItem'
+import FilesHandler from '../../components/FilesHandler'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -17,6 +18,7 @@ export default function FileManager(): ReactElement {
 
   return (
     <div className={classes.container}>
+      <FilesHandler />
       <FileItem
         name="File name"
         size={9456321.854}
