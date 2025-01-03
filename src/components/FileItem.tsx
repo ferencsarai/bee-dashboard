@@ -7,6 +7,7 @@ import FileCopyLineIcon from 'remixicon-react/FileCopyLineIcon'
 import ShareFillIcon from 'remixicon-react/ShareFillIcon'
 import MoreOptions from './MoreOptions'
 import InfoIcon from './InfoIcon'
+import Preview from './Preview'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -30,7 +31,7 @@ const useStyles = makeStyles(() =>
     },
     fileName: {
       fontSize: '20px',
-      marginLeft: '10px',
+      marginLeft: '28px',
       marginRight: '10px',
     },
     size: {
@@ -56,6 +57,11 @@ const useStyles = makeStyles(() =>
       bottom: '0',
       right: '0',
     },
+    preview: {
+      position: 'absolute',
+      top: '0',
+      left: '0',
+    },
   }),
 )
 
@@ -73,8 +79,9 @@ const FileItem = (props: Props): ReactElement => {
     <div className={classes.container}>
       <div>
         <div className={classes.flexDisplay}>
-          <CheckboxLineIcon size="20" />
-
+          <div>
+            <Preview />
+          </div>
           <div className={classes.fileName}>{props.name}</div>
           <Download2LineIcon size="20" />
         </div>

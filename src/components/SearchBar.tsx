@@ -6,7 +6,7 @@ const useStyles = makeStyles(() =>
   createStyles({
     container: {
       position: 'relative',
-      padding: '10px',
+      // padding: '10px',
       backgroundColor: '#ffffff',
       fontSize: '12px',
       display: 'flex',
@@ -20,7 +20,7 @@ const SearchBar = (): ReactElement => {
 
   return (
     <div className={classes.container}>
-      <Paper component="form" style={{ padding: '8px 8px', display: 'flex', alignItems: 'center' }}>
+      <Paper component="form" style={{ paddingLeft: '8px', display: 'flex', alignItems: 'center' }}>
         <InputBase placeholder="Search" inputProps={{ 'aria-label': 'search' }} />
         <IconButton type="button" aria-label="search">
           <SearchLineIcon />
