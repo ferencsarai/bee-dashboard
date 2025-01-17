@@ -3,6 +3,7 @@ import type { ReactElement } from 'react'
 import { useState } from 'react'
 import SortAscIcon from 'remixicon-react/SortAscIcon'
 import SortDescIcon from 'remixicon-react/SortDescIcon'
+import OrderIcon from './OrderIcon'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -17,32 +18,36 @@ const useStyles = makeStyles(() =>
       justifyContent: 'center',
       alignItems: 'center',
       cursor: 'pointer',
+      color: '#333333',
+      fontFamily: '"iAWriterMonoV", monospace',
       '&:hover': {
         backgroundColor: '#f0f0f0',
       },
+      '&:hover $dropdown': {
+        display: 'flex',
+      },
     },
     dropdown: {
-      border: '1px solid #959595',
+      display: 'none',
       backgroundColor: '#ffffff',
       position: 'absolute',
       top: '100%',
       zIndex: 1,
       width: '150px',
-      display: 'flex',
       flexDirection: 'column',
-      justifyContent: 'center',
+      justifyContent: 'left',
       alignItems: 'center',
-      borderRadius: '5px',
       boxSizing: 'border-box',
       '& div': {
         width: '100%',
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'left',
         alignItems: 'center',
         padding: '10px',
       },
       '& div:hover': {
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#DE7700',
+        color: '#ffffff',
       },
     },
   }),
@@ -55,22 +60,19 @@ interface Props {
 
 const Order = (props: Props): ReactElement => {
   const classes = useStyles()
-  const [clicked, setClicked] = useState(false)
 
   return (
-    <div className={classes.container} onClick={() => setClicked(!clicked)}>
-      {props.order === 'asc' ? <SortAscIcon size={20} /> : <SortDescIcon size={20} />}
+    <div className={classes.container}>
+      <OrderIcon />
       <div>Order</div>
-      {clicked ? (
-        <div className={classes.dropdown}>
-          <div>Alphabet Inc.</div>
-          <div>Alphabet Dec.</div>
-          <div>Size Inc.</div>
-          <div>Size Dec.</div>
-          <div>Date Inc.</div>
-          <div>Date Dec.</div>
-        </div>
-      ) : null}
+      <div className={classes.dropdown}>
+        <div>Alphabet inc.</div>
+        <div>Alphabet dec.</div>
+        <div>Size inc.</div>
+        <div>Size dec.</div>
+        <div>Date/time inc.</div>
+        <div>Date/time dec.</div>
+      </div>
     </div>
   )
 }

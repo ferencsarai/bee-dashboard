@@ -1,13 +1,14 @@
 import { createStyles, makeStyles } from '@material-ui/core'
 import type { ReactElement } from 'react'
-import UploadLineIcon from 'remixicon-react/UploadLineIcon'
+import SwarmIcon from '../assets/swarmIcon.png'
 
 const useStyles = makeStyles(() =>
   createStyles({
     container: {
       position: 'relative',
-      backgroundColor: '#ffffff',
+      backgroundColor: '#DE7700',
       fontSize: '12px',
+      fontFamily: '"iAWriterMonoV", monospace',
       width: '65px',
       height: '100%',
       display: 'flex',
@@ -15,8 +16,36 @@ const useStyles = makeStyles(() =>
       justifyContent: 'center',
       alignItems: 'center',
       cursor: 'pointer',
+      color: '#FCFCFC',
       '&:hover': {
-        backgroundColor: '#f0f0f0',
+        backgroundColor: '#DE7700',
+      },
+      '&:hover $dropdown': {
+        display: 'flex',
+      },
+    },
+    dropdown: {
+      display: 'none',
+      backgroundColor: '#ffffff',
+      position: 'absolute',
+      top: '100%',
+      zIndex: 1,
+      width: '150px',
+      flexDirection: 'column',
+      justifyContent: 'left',
+      alignItems: 'center',
+      boxSizing: 'border-box',
+      color: '#333333',
+      '& div': {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'left',
+        alignItems: 'center',
+        padding: '10px',
+      },
+      '& div:hover': {
+        backgroundColor: '#DE7700',
+        color: '#ffffff',
       },
     },
   }),
@@ -27,8 +56,13 @@ const Upload = (): ReactElement => {
 
   return (
     <div className={classes.container}>
-      <UploadLineIcon size={20} />
+      <img src={SwarmIcon} alt="" height="16" />
       <div>Upload</div>
+
+      <div className={classes.dropdown}>
+        <div>Files and folders</div>
+        <div>WEBsite</div>
+      </div>
     </div>
   )
 }

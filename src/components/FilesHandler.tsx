@@ -18,17 +18,20 @@ const useStyles = makeStyles(() =>
   createStyles({
     container: {
       position: 'relative',
-      padding: '10px',
-      height: '68px',
+      paddingTop: '10px',
+      paddingBottom: '10px',
+      height: '65px',
       boxSizing: 'border-box',
-      backgroundColor: '#ffffff',
+      // backgroundColor: '#ffffff',
       fontSize: '12px',
       display: 'flex',
+      gap: '10px',
       justifyContent: 'space-between',
       alignItems: 'center',
     },
     flex: {
       display: 'flex',
+      height: '100%',
     },
     options: {
       display: 'flex',
@@ -51,22 +54,23 @@ const FilesHandler = (): ReactElement => {
   return (
     <div className={classes.container}>
       <SearchBar />
-      <Grouping />
-      <ForMe />
-      {/* <FreeUp /> */}
-      <Volume value={1} />
-      <Volume value={2} />
-      <Volume value={3} />
-      <Volume value={4} />
-      <Volume value={5} />
-      <Manage />
-      <Divider orientation="vertical" />
-      {/* <Sharing />
-          <Download />
-          <Selection /> */}
-      <Download />
-      <Upload />
-      <Order order={order} onClick={handleOrder} />
+
+      <div className={classes.flex}>
+        <Grouping />
+        <ForMe />
+        {/* <FreeUp /> */}
+        <Volume value={1} />
+        <Volume value={2} />
+        <Volume value={3} />
+        <Volume value={4} />
+        <Volume value={5} notificationText="!" />
+        <Manage />
+      </div>
+      <div className={classes.flex}>
+        <Download notificationText="123" />
+        <Upload />
+        <Order order={order} onClick={handleOrder} />
+      </div>
     </div>
   )
 }

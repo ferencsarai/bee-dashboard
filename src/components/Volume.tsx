@@ -2,7 +2,9 @@ import { createStyles, makeStyles, Tooltip } from '@material-ui/core'
 import React from 'react'
 import { useState } from 'react'
 import type { ReactElement } from 'react'
-import HardDrive2FillIcon from 'remixicon-react/HardDrive2FillIcon'
+import VolumeIcon from './VolumeIcon'
+import SwarmCheckedIcon from './SwarmCheckedIcon'
+import NotificationSign from './NotificationSign'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -17,21 +19,29 @@ const useStyles = makeStyles(() =>
       justifyContent: 'center',
       alignItems: 'center',
       cursor: 'pointer',
+      fontFamily: '"iAWriterMonoV", monospace',
       '&:hover': {
         backgroundColor: '#f0f0f0',
       },
     },
-    black: {
-      fill: '#000000',
+    flex: {
+      display: 'flex',
     },
-    transparent: {
-      fill: '#00000040',
+    absoluteLeft: {
+      position: 'absolute',
+      left: '15px',
+    },
+    absoluteRight: {
+      position: 'absolute',
+      right: '5px',
+      top: '2px',
     },
   }),
 )
 
 interface Props {
   value: number
+  notificationText?: string
 }
 
 const Volume = (props: Props): ReactElement => {
@@ -52,7 +62,17 @@ const Volume = (props: Props): ReactElement => {
       arrow
     >
       <div className={classes.container} onClick={() => setClicked(!clicked)}>
-        <HardDrive2FillIcon size={20} className={clicked ? classes.black : classes.transparent} />
+        <div className={classes.flex}>
+          <div className={classes.absoluteLeft}>
+            <SwarmCheckedIcon color={clicked ? '#DE7700' : '#33333333'} />
+          </div>
+          <VolumeIcon color={clicked ? '#333333' : '#33333333'} />
+          {props.notificationText ? (
+            <div className={classes.absoluteRight}>
+              <NotificationSign text={props.notificationText} />
+            </div>
+          ) : null}
+        </div>
         <div>Vol.-{props.value}</div>
       </div>
     </Tooltip>

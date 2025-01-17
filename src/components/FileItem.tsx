@@ -1,24 +1,57 @@
 import { createStyles, makeStyles } from '@material-ui/core'
 import type { ReactElement } from 'react'
-import Download2LineIcon from 'remixicon-react/Download2LineIcon'
-import CheckboxLineIcon from 'remixicon-react/CheckboxLineIcon'
-import Database2FillIcon from 'remixicon-react/Database2FillIcon'
-import FileCopyLineIcon from 'remixicon-react/FileCopyLineIcon'
-import ShareFillIcon from 'remixicon-react/ShareFillIcon'
-import MoreOptions from './MoreOptions'
-import InfoIcon from './InfoIcon'
+import ErrorWarningFillIcon from 'remixicon-react/ErrorWarningFillIcon'
+import PriceTag3FillIcon from 'remixicon-react/PriceTag3FillIcon'
+import Message2FillIcon from 'remixicon-react/Message2FillIcon'
 import Preview from './Preview'
+import FileTypeIcon from './FileTypeIcon'
+import Edit from './Edit'
+import SharedIcon from './SharedIcon'
+import DownloadQueueIcon from './DownloadQueueIcon'
+import FolderEnteringIcon from './FolderEnteringIcon'
+import NoteIcon from './NoteIcon'
+import LabelIcon from './LabelIcon'
+import NotificationSign from './NotificationSign'
 
 const useStyles = makeStyles(() =>
   createStyles({
     container: {
       position: 'relative',
-      padding: '10px',
       backgroundColor: '#ffffff',
       fontSize: '12px',
       cursor: 'pointer',
       display: 'flex',
       justifyContent: 'space-between',
+    },
+    leftSide: {
+      display: 'flex',
+      width: '48px',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: '#33333333',
+    },
+    folderLeftSide: {
+      display: 'flex',
+      width: '48px',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: '#333333',
+    },
+    middleSide: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '20px',
+      padding: '5px',
+      justifyContent: '',
+      flexGrow: 1,
+    },
+    rightSide: {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      alignItems: 'end',
     },
     flexDisplay: {
       display: 'flex',
@@ -29,47 +62,53 @@ const useStyles = makeStyles(() =>
       flexDirection: 'column',
       alignItems: 'flex-end',
     },
-    fileName: {
+    fileNameRow: {
+      display: 'flex',
+      gap: '15px',
       fontSize: '20px',
       marginLeft: '28px',
       marginRight: '10px',
     },
-    size: {
+    fileDataText: {
       fontWeight: 'bold',
       marginLeft: '30px',
-    },
-    hashRow: {
-      display: 'flex',
-      alignItems: 'center',
-      marginTop: '20px',
-    },
-    hash: {
-      marginLeft: '10px',
-      marginRight: '10px',
     },
     expires: {
       display: 'flex',
       alignItems: 'center',
       color: 'orange',
     },
-    moreoptions: {
-      position: 'absolute',
-      bottom: '0',
-      right: '0',
-    },
     preview: {
       position: 'absolute',
       top: '0',
       left: '0',
+    },
+    icons: {
+      display: 'flex',
+      gap: '5px',
+      paddingTop: '5px',
+      paddingRight: '5px',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    fileTypeIcon: {
+      marginTop: 'auto',
     },
   }),
 )
 
 interface Props {
   name: string
+  type: 'video' | 'audio' | 'image' | 'document' | 'folder' | 'other'
   size: number
   hash: string
   expires: string
+  preview?: boolean
+  note?: boolean
+  tag?: boolean
+  shared?: 'me' | 'others'
+  warning?: boolean
+  addedToQueue?: boolean
 }
 
 const FileItem = (props: Props): ReactElement => {
@@ -77,31 +116,32 @@ const FileItem = (props: Props): ReactElement => {
 
   return (
     <div className={classes.container}>
-      <div>
-        <div className={classes.flexDisplay}>
-          <div>
-            <Preview />
-          </div>
-          <div className={classes.fileName}>{props.name}</div>
-          <Download2LineIcon size="20" />
-        </div>
-        <div className={classes.size}>{props.size} GB</div>
-        <div className={classes.hashRow}>
-          <Database2FillIcon size="12" />
-          <div className={classes.hash}>{props.hash}</div>
-          <FileCopyLineIcon size="12" />
+      <div className={props.type !== 'folder' ? classes.leftSide : classes.folderLeftSide}>
+        {props.type !== 'folder' && props.preview ? <Preview /> : null}
+        {props.type === 'folder' ? <FolderEnteringIcon /> : null}
+        <div className={classes.fileTypeIcon}>
+          <FileTypeIcon type={props.type} />
         </div>
       </div>
-      <div className={classes.flexRight}>
+      <div className={classes.middleSide}>
+        <div className={classes.fileNameRow}>
+          {props.name}
+          <DownloadQueueIcon added={props.addedToQueue} />
+        </div>
         <div className={classes.flexDisplay}>
-          Shared with me <ShareFillIcon size="12" />
+          <div className={classes.fileDataText}>
+            {props.expires} - {props.size} GB
+          </div>
         </div>
-        <div className={classes.expires}>
-          Expires {props.expires} <InfoIcon />
+      </div>
+      <div className={classes.rightSide}>
+        <div className={classes.icons}>
+          {props.note ? <NoteIcon /> : null}
+          {props.tag ? <LabelIcon /> : null}
+          {props.shared ? <SharedIcon sharedBy={props.shared} /> : null}
+          {props.warning ? <NotificationSign text="!" /> : null}
         </div>
-        <div className={classes.moreoptions}>
-          <MoreOptions text="..." />
-        </div>
+        <Edit />
       </div>
     </div>
   )
