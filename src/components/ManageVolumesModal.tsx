@@ -3,7 +3,7 @@ import { createStyles, makeStyles } from '@material-ui/core'
 import type { ReactElement } from 'react'
 import { useState } from 'react'
 import NotificationSign from './NotificationSign'
-import NewVolumeModal from './NewVolumeModal'
+import VolumeModal from './VolumeModal'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -136,7 +136,7 @@ const ManageVolumesModal = (props: ManageModalProps): ReactElement => {
           </div>
         </div>
       </div>
-      {newVolumeModalDisplay && <NewVolumeModal modalDisplay={(value: boolean) => setNewVolumeModalDisplay(value)} />}
+      {newVolumeModalDisplay && <VolumeModal modalDisplay={(value: boolean) => setNewVolumeModalDisplay(value)} />}
     </div>
   )
 }

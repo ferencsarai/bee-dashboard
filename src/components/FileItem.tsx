@@ -1,8 +1,6 @@
 import { createStyles, makeStyles } from '@material-ui/core'
 import type { ReactElement } from 'react'
-import ErrorWarningFillIcon from 'remixicon-react/ErrorWarningFillIcon'
-import PriceTag3FillIcon from 'remixicon-react/PriceTag3FillIcon'
-import Message2FillIcon from 'remixicon-react/Message2FillIcon'
+import { useState } from 'react'
 import Preview from './Preview'
 import FileTypeIcon from './FileTypeIcon'
 import Edit from './Edit'
@@ -12,6 +10,7 @@ import FolderEnteringIcon from './FolderEnteringIcon'
 import NoteIcon from './NoteIcon'
 import LabelIcon from './LabelIcon'
 import NotificationSign from './NotificationSign'
+import FileModal from './FileModal'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -30,6 +29,7 @@ const useStyles = makeStyles(() =>
       justifyContent: 'space-between',
       alignItems: 'center',
       backgroundColor: '#33333333',
+      paddingBottom: '5px',
     },
     folderLeftSide: {
       display: 'flex',
@@ -113,36 +113,40 @@ interface Props {
 
 const FileItem = (props: Props): ReactElement => {
   const classes = useStyles()
+  const [showFileModal, setShowFileModal] = useState(false)
 
   return (
-    <div className={classes.container}>
-      <div className={props.type !== 'folder' ? classes.leftSide : classes.folderLeftSide}>
-        {props.type !== 'folder' && props.preview ? <Preview /> : null}
-        {props.type === 'folder' ? <FolderEnteringIcon /> : null}
-        <div className={classes.fileTypeIcon}>
-          <FileTypeIcon type={props.type} />
-        </div>
-      </div>
-      <div className={classes.middleSide}>
-        <div className={classes.fileNameRow}>
-          {props.name}
-          <DownloadQueueIcon added={props.addedToQueue} />
-        </div>
-        <div className={classes.flexDisplay}>
-          <div className={classes.fileDataText}>
-            {props.expires} - {props.size} GB
+    <div>
+      <div className={classes.container} onClick={() => setShowFileModal(true)}>
+        <div className={props.type !== 'folder' ? classes.leftSide : classes.folderLeftSide}>
+          {props.type !== 'folder' && props.preview ? <Preview /> : null}
+          {props.type === 'folder' ? <FolderEnteringIcon /> : null}
+          <div className={classes.fileTypeIcon}>
+            <FileTypeIcon type={props.type} />
           </div>
         </div>
-      </div>
-      <div className={classes.rightSide}>
-        <div className={classes.icons}>
-          {props.note ? <NoteIcon /> : null}
-          {props.tag ? <LabelIcon /> : null}
-          {props.shared ? <SharedIcon sharedBy={props.shared} /> : null}
-          {props.warning ? <NotificationSign text="!" /> : null}
+        <div className={classes.middleSide}>
+          <div className={classes.fileNameRow}>
+            {props.name}
+            <DownloadQueueIcon added={props.addedToQueue} />
+          </div>
+          <div className={classes.flexDisplay}>
+            <div className={classes.fileDataText}>
+              {props.expires} - {props.size} GB
+            </div>
+          </div>
         </div>
-        <Edit />
+        <div className={classes.rightSide}>
+          <div className={classes.icons}>
+            {props.note ? <NoteIcon /> : null}
+            {props.tag ? <LabelIcon /> : null}
+            {props.shared ? <SharedIcon sharedBy={props.shared} /> : null}
+            {props.warning ? <NotificationSign text="!" /> : null}
+          </div>
+          <Edit />
+        </div>
       </div>
+      {showFileModal ? <FileModal modalDisplay={value => setShowFileModal(value)} /> : null}
     </div>
   )
 }
