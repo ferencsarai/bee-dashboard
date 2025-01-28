@@ -1,8 +1,21 @@
-import { createStyles, Divider, makeStyles } from '@material-ui/core'
-import { ReactElement } from 'react'
-import FileItem from '../../components/FileItem'
-import FilesHandler from '../../components/FilesHandler'
-import SharedWith from '../../components/SharedWith'
+import { createStyles, Divider, makeStyles } from '@material-ui/core';
+import { ReactElement, useEffect, useState } from 'react';
+import FileItem, { Props as FileItemProps } from '../../components/FileItem';
+import FilesHandler from '../../components/FilesHandler';
+import SharedWith from '../../components/SharedWith';
+import { getFileInfoList } from '@solarpunkltd/file-manager';
+import { BatchId, Reference } from '@ethersphere/bee-js';
+
+export interface FileInfo {
+  fileRef: string | Reference;
+  batchId: string | BatchId;
+  shared?: boolean;
+  fileName?: string;
+  owner?: string;
+  eGlRef?: string | Reference;
+  historyRef?: string | Reference;
+  timestamp?: number;
+}
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -17,109 +30,83 @@ const useStyles = makeStyles(() =>
       justifyContent: 'center',
       gap: '10px',
     },
-  }),
-)
+  })
+);
+
+// Map FileInfo to FileItemProps
+function mapFileInfoToFileItemProps(file: FileInfo): Omit<FileItemProps, 'key'> {
+  return {
+    name: file.fileName || 'Unknown',
+    type: determineFileType(file.fileName || ''),
+    size: 0, // Default size if not provided
+    hash: file.fileRef.toString(),
+    expires: file.timestamp
+      ? new Date(file.timestamp).toLocaleDateString()
+      : 'N/A',
+    preview: false,
+    note: false,
+    tag: false,
+    shared: file.shared ? 'others' : 'me',
+    warning: false,
+    addedToQueue: false,
+  };
+}
+
+// Determine file type based on file extension
+function determineFileType(fileName: string): FileItemProps['type'] {
+  const extension = fileName.split('.').pop()?.toLowerCase();
+  switch (extension) {
+    case 'mp4':
+    case 'mkv':
+      return 'video';
+    case 'mp3':
+    case 'wav':
+      return 'audio';
+    case 'jpg':
+    case 'png':
+    case 'gif':
+      return 'image';
+    case 'pdf':
+    case 'docx':
+      return 'document';
+    case undefined:
+      return 'folder';
+    default:
+      return 'other';
+  }
+}
 
 export default function FileManager(): ReactElement {
-  const classes = useStyles()
-  // const elements = Array.from({ length: 10000 }, (_, index) => (
-  //   <FileItem
-  //     name="ACT WorkShop part5 (2024-03-25 15_06 GMT+1).mp4"
-  //     type="video"
-  //     size={9456321.854}
-  //     hash="Begin of the hash ... end of the hash"
-  //     expires="31/09/2024"
-  //     preview={true}
-  //     message={true}
-  //     tag={true}
-  //     shared="me"
-  //     warning={true}
-  //     addedToQueue={true}
-  //   />
-  // ))
+  const classes = useStyles();
+
+  const [fileList, setFileList] = useState<FileInfo[]>([]);
+
+  useEffect(() => {
+    async function fetchFiles() {
+      try {
+        const files = await getFileInfoList();
+        setFileList(files);
+      } catch (error) {
+        console.error('Failed to fetch file info list:', error);
+      }
+    }
+
+    fetchFiles();
+  }, []);
 
   return (
     <div className={classes.container}>
       <FilesHandler />
-      {/* {elements} */}
       <div className={classes.flexDisplay}>
         <SharedWith text="For me" />
         <div style={{ flexGrow: 1 }}>
           <Divider />
         </div>
       </div>
-      <FileItem
-        name="ACT WorkShop part5 (2024-03-25 15_06 GMT+1).mp4"
-        type="video"
-        size={9456321.854}
-        hash="Begin of the hash ... end of the hash"
-        expires="31/09/2024"
-        preview={true}
-        note={true}
-        tag={true}
-        shared="me"
-        warning={true}
-        addedToQueue={true}
-      />
-      <FileItem
-        name="ACT WorkShop part5 (2024-03-25 15_06 GMT+1).mp4"
-        type="video"
-        size={9456321.854}
-        hash="Begin of the hash ... end of the hash"
-        expires="31/09/2024"
-        preview={true}
-        shared="others"
-        addedToQueue={false}
-      />
-      <FileItem
-        name="ACT WorkShop part5 (2024-03-25 15_06 GMT+1).mp4"
-        type="video"
-        size={9456321.854}
-        hash="Begin of the hash ... end of the hash"
-        expires="31/09/2024"
-        preview={false}
-        addedToQueue={false}
-      />
-      <FileItem
-        name="ACT WorkShop part5 (2024-03-25 15_06 GMT+1).mp4"
-        type="folder"
-        size={9456321.854}
-        hash="Begin of the hash ... end of the hash"
-        expires="31/09/2024"
-        preview={true}
-        note={true}
-        tag={true}
-        shared="me"
-        warning={true}
-        addedToQueue={true}
-      />
-      <FileItem
-        name="ACT WorkShop part5 (2024-03-25 15_06 GMT+1).mp4"
-        type="audio"
-        size={9456321.854}
-        hash="Begin of the hash ... end of the hash"
-        expires="31/09/2024"
-        preview={true}
-        addedToQueue={false}
-      />
-      <FileItem
-        name="ACT WorkShop part5 (2024-03-25 15_06 GMT+1).mp4"
-        type="document"
-        size={9456321.854}
-        hash="Begin of the hash ... end of the hash"
-        expires="31/09/2024"
-        preview={true}
-        addedToQueue={true}
-      />
-      <FileItem
-        name="ACT WorkShop part5 (2024-03-25 15_06 GMT+1).mp4"
-        type="other"
-        size={9456321.854}
-        hash="Begin of the hash ... end of the hash"
-        expires="31/09/2024"
-        preview={true}
-        addedToQueue={true}
-      />
+      {fileList.map((file: FileInfo) => {
+        const fileItemProps = mapFileInfoToFileItemProps(file);
+        return <FileItem {...fileItemProps} />;
+      })}
     </div>
-  )
+  );
 }

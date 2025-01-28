@@ -97,7 +97,7 @@ const useStyles = makeStyles(() =>
   }),
 )
 
-interface Props {
+export interface Props {
   name: string
   type: 'video' | 'audio' | 'image' | 'document' | 'folder' | 'other'
   size: number
