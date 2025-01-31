@@ -57,6 +57,7 @@ const useStyles = makeStyles(() =>
 
 interface VolumeModalProps {
   modalDisplay: (value: boolean) => void
+  new?: boolean
 }
 
 const VolumeModal = (props: VolumeModalProps): ReactElement => {
@@ -87,7 +88,7 @@ const VolumeModal = (props: VolumeModalProps): ReactElement => {
           </div>
         </div>
         {activeTab === 'Properties' ? (
-          <VolumePropertiesModal modalDisplay={props.modalDisplay} newVolume={true} />
+          <VolumePropertiesModal modalDisplay={props.modalDisplay} newVolume={props.new ? props.new : false} />
         ) : null}
         {activeTab === 'Sharing' ? (
           <VolumeSharingModal

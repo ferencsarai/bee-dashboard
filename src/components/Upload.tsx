@@ -1,6 +1,8 @@
 import { createStyles, makeStyles } from '@material-ui/core'
 import type { ReactElement } from 'react'
+import { useState } from 'react'
 import SwarmIcon from '../assets/swarmIcon.png'
+import UploadModal from './UploadModal'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -30,16 +32,16 @@ const useStyles = makeStyles(() =>
       position: 'absolute',
       top: '100%',
       zIndex: 1,
-      width: '150px',
+      width: '90px',
       flexDirection: 'column',
-      justifyContent: 'left',
+      justifyContent: 'center',
       alignItems: 'center',
       boxSizing: 'border-box',
       color: '#333333',
       '& div': {
         width: '100%',
         display: 'flex',
-        justifyContent: 'left',
+        justifyContent: 'center',
         alignItems: 'center',
         padding: '10px',
       },
@@ -53,6 +55,30 @@ const useStyles = makeStyles(() =>
 
 const Upload = (): ReactElement => {
   const classes = useStyles()
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+
+    if (files && files.length > 0) {
+      const file = files[0]
+      setSelectedFile(file)
+      setIsModalOpen(true)
+    }
+  }
+
+  const handleUploadClick = () => {
+    const fileInput = document.getElementById('file-upload') as HTMLInputElement
+
+    if (fileInput) {
+      fileInput.click()
+    }
+  }
+
+  const handleCloseConfirmationModal = () => {
+    setIsModalOpen(false)
+  }
 
   return (
     <div className={classes.container}>
@@ -60,9 +86,15 @@ const Upload = (): ReactElement => {
       <div>Upload</div>
 
       <div className={classes.dropdown}>
-        <div>Files and folders</div>
-        <div>WEBsite</div>
+        <div onClick={handleUploadClick}>{'> Vol-1'}</div>
+        <div>{'> MYVIDS'}</div>
+        <div>{'> Vol-3'}</div>
+        <div>{'> Vol-4'}</div>
+        <div>{'> Vol-5'}</div>
       </div>
+
+      <input type="file" onChange={handleFileChange} style={{ display: 'none' }} id="file-upload" />
+      {isModalOpen ? <UploadModal modalDisplay={value => setIsModalOpen(value)} /> : null}
     </div>
   )
 }

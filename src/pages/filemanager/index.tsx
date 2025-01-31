@@ -3,6 +3,7 @@ import { ReactElement } from 'react'
 import FileItem from '../../components/FileItem'
 import FilesHandler from '../../components/FilesHandler'
 import SharedWith from '../../components/SharedWith'
+import FileNavigation from '../../components/FileNavigation'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -22,26 +23,12 @@ const useStyles = makeStyles(() =>
 
 export default function FileManager(): ReactElement {
   const classes = useStyles()
-  // const elements = Array.from({ length: 10000 }, (_, index) => (
-  //   <FileItem
-  //     name="ACT WorkShop part5 (2024-03-25 15_06 GMT+1).mp4"
-  //     type="video"
-  //     size={9456321.854}
-  //     hash="Begin of the hash ... end of the hash"
-  //     expires="31/09/2024"
-  //     preview={true}
-  //     message={true}
-  //     tag={true}
-  //     shared="me"
-  //     warning={true}
-  //     addedToQueue={true}
-  //   />
-  // ))
 
   return (
     <div className={classes.container}>
       <FilesHandler />
       {/* {elements} */}
+      <FileNavigation />
       <div className={classes.flexDisplay}>
         <SharedWith text="For me" />
         <div style={{ flexGrow: 1 }}>

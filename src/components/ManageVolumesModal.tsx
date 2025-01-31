@@ -89,6 +89,7 @@ interface ManageModalProps {
 
 const ManageVolumesModal = (props: ManageModalProps): ReactElement => {
   const classes = useStyles()
+  const [volumeModalDisplay, setVolumeModalDisplay] = useState(false)
   const [newVolumeModalDisplay, setNewVolumeModalDisplay] = useState(false)
 
   const infoArray = [
@@ -110,7 +111,7 @@ const ManageVolumesModal = (props: ManageModalProps): ReactElement => {
         </div>
         <div className={classes.flexCenter}>
           {infoArray.map((info, index) => (
-            <div key={index} className={classes.volumenButtonContainer}>
+            <div key={index} className={classes.volumenButtonContainer} onClick={() => setVolumeModalDisplay(true)}>
               <div className={classes.buttonElement}>{info.text}</div>
               <div className={classes.buttonElementNotificationSign}>
                 {info.warning ? <NotificationSign text="!" /> : null}
@@ -136,7 +137,12 @@ const ManageVolumesModal = (props: ManageModalProps): ReactElement => {
           </div>
         </div>
       </div>
-      {newVolumeModalDisplay && <VolumeModal modalDisplay={(value: boolean) => setNewVolumeModalDisplay(value)} />}
+      {newVolumeModalDisplay && (
+        <VolumeModal modalDisplay={(value: boolean) => setNewVolumeModalDisplay(value)} new={true} />
+      )}
+      {volumeModalDisplay && (
+        <VolumeModal modalDisplay={(value: boolean) => setVolumeModalDisplay(value)} new={false} />
+      )}
     </div>
   )
 }

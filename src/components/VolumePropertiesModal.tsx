@@ -5,6 +5,7 @@ import DownloadIcon from './DownloadIcon'
 import { SwarmTextInput } from './SwarmTextInput'
 import DestroyIcon from './DestroyIcon'
 import SwarmIcon from './SwarmIcon'
+import SliderFileManager from './SliderFileManager'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -52,8 +53,21 @@ const useStyles = makeStyles(() =>
     volumenButtonContainer: {
       position: 'relative',
     },
-    buttonElement: {
+    buttonElementCancel: {
       backgroundColor: '#FFFFFF',
+      width: '256px',
+      height: '42px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      '&:hover': {
+        backgroundColor: '#DE7700',
+        color: '#FFFFFF',
+      },
+    },
+    buttonElementUpdate: {
+      backgroundColor: '#DE7700',
+      color: '#FFFFFF',
       width: '256px',
       height: '42px',
       display: 'flex',
@@ -73,8 +87,9 @@ const useStyles = makeStyles(() =>
       backgroundColor: '#DE7700',
       color: '#FFFFFF',
     },
-    cancelButtonContainer: {
+    buttonContainer: {
       display: 'flex',
+      gap: '20px',
       justifyContent: 'right',
     },
     tabPanel: {
@@ -196,7 +211,13 @@ const useStyles = makeStyles(() =>
         boxShadow: 'inherit',
       },
     },
-    active: {},
+    costContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      fontFamily: '"iAWriterMonoV", monospace',
+      fontSize: '24px',
+    },
   }),
 )
 
@@ -226,22 +247,45 @@ const VolumePropertiesModal = (props: VolumePropertiesModalProps): ReactElement 
     setIsHoveredDownload(false)
   }
 
-  const marks = [
+  const sizeMarks = [
+    {
+      value: 0,
+    },
+    {
+      value: 10,
+    },
+    {
+      value: 20,
+    },
+    {
+      value: 30,
+    },
+  ]
+
+  const dateMarks = [
+    {
+      value: 10,
+    },
+    {
+      value: 20,
+    },
+    {
+      value: 30,
+    },
+  ]
+
+  const erasureCodeMarks = [
     {
       value: 1,
-      label: 'medium',
     },
     {
       value: 2,
-      label: 'strong',
     },
     {
       value: 3,
-      label: 'insane',
     },
     {
-      value: 4,
-      label: 'paranoid',
+      value: 3,
     },
   ]
 
@@ -269,46 +313,88 @@ const VolumePropertiesModal = (props: VolumePropertiesModalProps): ReactElement 
               </div>
             )}
           </div>
-          <div
-            style={{
-              display: 'flex',
-              gap: '20px',
-              backgroundColor: '#CFCDCD',
-              padding: '20px',
-              boxSizing: 'border-box',
-            }}
-          >
+          {!props.newVolume ? (
             <div
-              className={classes.downloadButtonContainer}
-              onMouseEnter={handleMouseEnterDestroy}
-              onMouseLeave={handleMouseLeaveDestroy}
+              style={{
+                display: 'flex',
+                gap: '20px',
+                backgroundColor: '#CFCDCD',
+                padding: '20px',
+                boxSizing: 'border-box',
+              }}
             >
-              <DestroyIcon color={isHoveredDestroy ? '#FFFFFF' : '#333333'} />
-              <div style={{ textAlign: 'center' }}>Destroy volume</div>
+              <div
+                className={classes.downloadButtonContainer}
+                onMouseEnter={handleMouseEnterDestroy}
+                onMouseLeave={handleMouseLeaveDestroy}
+              >
+                <DestroyIcon color={isHoveredDestroy ? '#FFFFFF' : '#333333'} />
+                <div style={{ textAlign: 'center' }}>Destroy volume</div>
+              </div>
+              <div
+                className={classes.downloadButtonContainer}
+                onMouseEnter={handleMouseEnterDownload}
+                onMouseLeave={handleMouseLeaveDownload}
+              >
+                <DownloadIcon color={isHoveredDownload ? '#FFFFFF' : '#333333'} />
+                <div style={{ textAlign: 'center' }}>Download now</div>
+              </div>
             </div>
-            <div
-              className={classes.downloadButtonContainer}
-              onMouseEnter={handleMouseEnterDownload}
-              onMouseLeave={handleMouseLeaveDownload}
-            >
-              <DownloadIcon color={isHoveredDownload ? '#FFFFFF' : '#333333'} />
-              <div style={{ textAlign: 'center' }}>Download now</div>
-            </div>
-          </div>
+          ) : null}
         </div>
-
-        <Slider
+        <SliderFileManager
+          upperLabel="Size:"
+          defaultValue={9.16}
+          marks={sizeMarks}
+          min={0}
+          max={40}
+          step={0.01}
+          upperMetric="GB"
+          lowerLabel="Current/used:"
+          lowerMetric="GB"
+          disabledRange={{ min: 0, max: 9.16 }}
+        />
+        <SliderFileManager
+          upperLabel="Validity:"
+          defaultValue={20}
+          marks={dateMarks}
+          min={0}
+          max={31}
           step={1}
-          marks={marks}
-          valueLabelDisplay="on"
+          lowerLabel="Current:"
+          upperMetric="/02/2025"
+          lowerMetric="/02/2022"
+          disabledRange={{ min: 0, max: 6 }}
+        />
+        <SliderFileManager
+          upperLabel="Data protection:"
+          defaultValue={1}
+          type="text"
+          marks={erasureCodeMarks}
           min={1}
           max={4}
-          classes={{ mark: classes.mark, markLabel: classes.markLabel }}
+          step={1}
+          lowerLabel="Current:"
+          disabledRange={{ min: 0, max: 0 }}
         />
+        <div className={classes.costContainer}>
+          Cost: &nbsp; <span style={{ fontWeight: 700 }}>123.45 BZZ</span>
+        </div>
 
-        <div className={classes.cancelButtonContainer}>
-          <div className={classes.buttonElement} style={{ width: '160px' }} onClick={() => props.modalDisplay(false)}>
+        <div className={classes.buttonContainer}>
+          <div
+            className={classes.buttonElementCancel}
+            style={{ width: '160px' }}
+            onClick={() => props.modalDisplay(false)}
+          >
             Cancel
+          </div>
+          <div
+            className={classes.buttonElementUpdate}
+            style={{ width: '160px' }}
+            onClick={() => props.modalDisplay(false)}
+          >
+            {props.newVolume ? 'Create' : 'Update'}
           </div>
         </div>
       </div>
