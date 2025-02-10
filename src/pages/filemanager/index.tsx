@@ -1,7 +1,6 @@
 import { ReactElement, useEffect, useState } from 'react'
 import { FileInfo, FileManager } from '@solarpunkltd/file-manager-lib'
-import { BatchId, Reference } from '@ethersphere/bee-js'
-import { createStyles, makeStyles } from '@material-ui/core'
+import { createStyles, makeStyles, Typography } from '@material-ui/core'
 import FileItem from '../../components/FileItem'
 
 const useStyles = makeStyles(() =>
@@ -50,22 +49,6 @@ export default function FM(): ReactElement {
     fetchFiles()
   }, [])
 
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    // filemanager.upload('123', '123', {
-    //   name: 'ACT WorkShop part3 (2024-03-25 15_06 GMT+1).mp4',
-    //   valid: '01/01/2024 00:00',
-    //   size: '9456321.854 Gb',
-    //   description: 'some description',
-    //   label: 'some label',
-    //   uploaded: 'by user',
-    //   type: 'audio',
-    //   preview: 'true',
-    // })
-    // eslint-disable-next-line no-console
-    console.log(filemanager.getFileInfoList())
-  }, [])
-
   return (
     <div>
       {fileList.length === 0 && <div className={classes.noFilesText}>There’re no items!</div>}
@@ -76,16 +59,22 @@ export default function FM(): ReactElement {
               <FileItem
                 name={file.customMetadata?.name ? file.customMetadata.name : ''}
                 type={file.customMetadata?.type ? file.customMetadata.type : 'other'}
-                size={100}
+                size={file.customMetadata?.size ? file.customMetadata.size : ''}
                 hash={file.eFileRef}
-                expires={'01/01/2024 00:00'}
+                expires={file.customMetadata?.valid ? file.customMetadata.valid : ''}
                 preview={file.customMetadata?.preview ? file.customMetadata.preview : ''}
               ></FileItem>
             </div>
           ))}
         </div>
       )}
-      {fileListError && <div className={classes.errorTextContainer}>Uh oh, some error happened</div>}
+      {fileListError && (
+        <div className={classes.errorTextContainer}>
+          <Typography variant="h1" align="center">
+            Uh oh, some error happened
+          </Typography>
+        </div>
+      )}
     </div>
   )
 }

@@ -85,8 +85,7 @@ const useStyles = makeStyles(() =>
 interface Props {
   name: string
   type: string
-  // type: 'video' | 'audio' | 'image' | 'document' | 'folder' | 'other'
-  size: number
+  size: string
   hash: string
   expires: string
   preview?: string
