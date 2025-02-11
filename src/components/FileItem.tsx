@@ -7,10 +7,10 @@ import FileItemEdit from './FileItemEdit'
 import SharedIcon from './icons/SharedIcon'
 import DownloadQueueIcon from './icons/DownloadQueueIcon'
 import FolderEnteringIcon from './icons/FolderEnteringIcon'
-import FileNoteIcon from './icons/FileNoteIcon'
 import FileLabelIcon from './icons/FileLabelIcon'
 import NotificationSign from './NotificationSign'
 import FileModal from './FileModal/FileModal'
+import FileDescriptionIcon from './icons/FileDescriptionIcon'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -84,12 +84,12 @@ const useStyles = makeStyles(() =>
 
 interface Props {
   name: string
-  type: string
+  type: 'video' | 'audio' | 'image' | 'document' | 'folder' | 'other'
   size: string
   hash: string
   expires: string
   preview?: string
-  note?: boolean
+  description?: boolean
   tag?: boolean
   shared?: 'me' | 'others'
   warning?: boolean
@@ -103,7 +103,7 @@ const FileItem = ({
   hash,
   expires,
   preview,
-  note,
+  description,
   tag,
   shared,
   warning,
@@ -135,7 +135,7 @@ const FileItem = ({
         </div>
         <div className={classes.rightSide}>
           <div className={classes.icons}>
-            {note ? <FileNoteIcon /> : null}
+            {description ? <FileDescriptionIcon /> : null}
             {tag ? <FileLabelIcon /> : null}
             {shared ? <SharedIcon sharedBy={shared} /> : null}
             {warning ? <NotificationSign text="!" /> : null}

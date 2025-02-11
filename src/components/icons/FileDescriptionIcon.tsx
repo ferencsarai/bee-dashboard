@@ -13,7 +13,7 @@ interface Props {
   color?: string
 }
 
-const FileNoteIcon = ({ color }: Props): ReactElement => {
+const FileDescriptionIcon = ({ color }: Props): ReactElement => {
   const classes = useStyles()
 
   return (
@@ -28,4 +28,4 @@ const FileNoteIcon = ({ color }: Props): ReactElement => {
   )
 }
 
-export default FileNoteIcon
+export default FileDescriptionIcon

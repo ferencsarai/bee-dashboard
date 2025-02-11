@@ -58,11 +58,29 @@ export default function FM(): ReactElement {
             <div key={index}>
               <FileItem
                 name={file.customMetadata?.name ? file.customMetadata.name : ''}
-                type={file.customMetadata?.type ? file.customMetadata.type : 'other'}
+                type={
+                  file.customMetadata?.type === 'video' ||
+                  file.customMetadata?.type === 'audio' ||
+                  file.customMetadata?.type === 'image' ||
+                  file.customMetadata?.type === 'document' ||
+                  file.customMetadata?.type === 'folder' ||
+                  file.customMetadata?.type === 'other'
+                    ? file.customMetadata.type
+                    : 'other'
+                }
                 size={file.customMetadata?.size ? file.customMetadata.size : ''}
                 hash={file.eFileRef}
                 expires={file.customMetadata?.valid ? file.customMetadata.valid : ''}
                 preview={file.customMetadata?.preview ? file.customMetadata.preview : ''}
+                description={file.customMetadata?.description === 'true'}
+                tag={file.customMetadata?.tag === 'true'}
+                shared={
+                  file.customMetadata?.shared === 'me' || file.customMetadata?.shared === 'others'
+                    ? file.customMetadata.shared
+                    : undefined
+                }
+                warning={file.customMetadata?.warning === 'true'}
+                addedToQueue={file.customMetadata?.addedToQueue === 'true'}
               ></FileItem>
             </div>
           ))}

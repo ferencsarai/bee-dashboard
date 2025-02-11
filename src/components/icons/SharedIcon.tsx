@@ -15,7 +15,7 @@ interface Props {
   sharedBy?: 'me' | 'others'
 }
 
-const EditIcon = ({ color, size, sharedBy }: Props): ReactElement => {
+const SharedIcon = ({ color, size, sharedBy }: Props): ReactElement => {
   const classes = useStyles()
 
   return (
@@ -56,4 +56,4 @@ const EditIcon = ({ color, size, sharedBy }: Props): ReactElement => {
   )
 }
 
-export default EditIcon
+export default SharedIcon
